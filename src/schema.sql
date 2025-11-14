@@ -1,4 +1,8 @@
 CREATE TABLE references_table (
   id SERIAL PRIMARY KEY,
-  content TEXT NOT NULL
+  cite_key TEXT NOT NULL UNIQUE,
+  title TEXT NOT NULL,
+  year INTEGER,
+  publisher TEXT,
+  created_at TIMESTAMP DEFAULT NOW()
 );
