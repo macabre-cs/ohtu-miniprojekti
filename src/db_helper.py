@@ -3,6 +3,7 @@ from sqlalchemy import text
 from config import db, app
 
 
+
 def reset_db():
     print("Clearing contents from table references_table")
     sql = text("DELETE FROM references_table")
