@@ -1,6 +1,7 @@
-from config import db, app
-from sqlalchemy import text
 import os
+from sqlalchemy import text
+from config import db, app
+
 
 
 def reset_db():
@@ -40,7 +41,8 @@ def setup_db():
 
     # Read schema from schema.sql file
     schema_path = os.path.join(os.path.dirname(__file__), 'schema.sql')
-    with open(schema_path, 'r') as f:
+    # Explicitly set encoding to avoid locale-dependent defaults
+    with open(schema_path, 'r', encoding='utf-8') as f:
         schema_sql = f.read().strip()
 
     sql = text(schema_sql)

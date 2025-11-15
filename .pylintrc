@@ -1,0 +1,30 @@
+[MASTER]
+ignore=tests
+ignore-patterns=src/tests/*
+
+[MESSAGE CONTROL]
+disable=
+    bad-inline-option,
+    locally-disabled,
+    file-ignored,
+    suppressed-message,
+    useless-suppression,
+    deprecated-pragma,
+    missing-module-docstring,
+    missing-function-docstring,
+    missing-class-docstring,
+    broad-except
+
+[FORMAT]
+max-line-length=100
+indent-after-paren=4
+
+[REFACTORING]
+max-nested-blocks=3
+
+[DESIGN]
+max-statements=50
+max-returns=6
+
+[CLASSES]
+min-public-methods=1

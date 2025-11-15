@@ -1,6 +1,6 @@
 class Reference:
-    def __init__(self, id, cite_key, title, year, publisher):
-        self.id = id
+    def __init__(self, reference_id, cite_key, title, year, publisher):
+        self.id = reference_id
         self.cite_key = cite_key
         self.title = title
         self.year = year

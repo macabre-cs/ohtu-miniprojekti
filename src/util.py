@@ -1,6 +1,7 @@
 class UserInputError(Exception):
     pass
 
+
 def validate_reference(content):
     if len(content) < 5:
         raise UserInputError("Reference content length must be greater than 4")
