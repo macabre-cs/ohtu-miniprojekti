@@ -24,3 +24,26 @@ def test_get_references(mock_db):
     assert references[0].title == "Title 1"
     # check that the function only made one query
     mock_db.session.execute.assert_called_once()
+
+
+@patch("repositories.reference_repository.db")
+def test_create_reference(mock_db):
+    reference = Reference(None, "key3", "Title 3", 2022, "Publisher C")
+
+    create_reference(reference)
+
+    # check that execute gets called
+    mock_db.session.execute.assert_called_once()
+
+    # check that the function uses correct parameters
+    args, kwargs = mock_db.session.execute.call_args
+    sql = str(args[0])
+    params = args[1]
+    assert "INSERT INTO references_table" in sql
+    assert params["cite_key"] == "key3"
+    assert params["title"] == "Title 3"
+    assert params["year"] == 2022
+    assert params["publisher"] == "Publisher C"
+
+    # check that the function commits
+    mock_db.session.commit.assert_called_once()
