@@ -7,9 +7,9 @@ def test_get_references(mock_db):
 
     # mock database with two reference entries
     mock_result = MagicMock()
-    mock_result.fetchall.return_value = [
-        (1, "key1", "Title 1", 2020, "Publisher A"),
-        (2, "key2", "Title 2", 2021, "Publisher B"),
+    mock_result.mappings.all.return_value = [
+        {"id": 1, "cite_key": "key1", "title": "Title 1", "year": 2020, "publisher": "Publisher A"},
+        {"id": 2, "cite_key": "key2", "title": "Title 2", "year": 2021, "publisher": "Publisher B"},
     ]
     # mock result
     mock_db.session.execute.return_value = mock_result
@@ -28,7 +28,14 @@ def test_get_references(mock_db):
 
 @patch("repositories.reference_repository.db")
 def test_create_reference(mock_db):
-    reference = Reference(None, "key3", "Title 3", 2022, "Publisher C")
+    reference_dict_test = {
+        "cite_key": "key3",
+        "title": "Title 3",
+        "year": 2022,
+        "publisher": "Publisher C"
+        }
+
+    reference = Reference(reference_dict_test)
 
     create_reference(reference)
 
@@ -36,9 +43,9 @@ def test_create_reference(mock_db):
     mock_db.session.execute.assert_called_once()
 
     # check that the function uses correct parameters
-    args, kwargs = mock_db.session.execute.call_args
-    sql = str(args[0])
-    params = args[1]
+    called_args, called_kwargs = mock_db.session.execute.call_args
+    sql = str(called_args[0])
+    params = called_args[1] if len(called_args) > 1 else called_kwargs
     assert "INSERT INTO references_table" in sql
     assert params["cite_key"] == "key3"
     assert params["title"] == "Title 3"
