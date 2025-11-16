@@ -7,7 +7,7 @@ from entities.reference import Reference
 def get_references():
     result = db.session.execute(
         text('SELECT id, cite_key, title, year, publisher FROM references_table'))
-    rows = result.mappings.all()
+    rows = result.mappings().all()
     return [Reference(row) for row in rows]
 
 

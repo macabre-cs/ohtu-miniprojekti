@@ -7,7 +7,7 @@ def test_get_references(mock_db):
 
     # mock database with two reference entries
     mock_result = MagicMock()
-    mock_result.mappings.all.return_value = [
+    mock_result.mappings().all.return_value = [
         {"id": 1, "cite_key": "key1", "title": "Title 1", "year": 2020, "publisher": "Publisher A"},
         {"id": 2, "cite_key": "key2", "title": "Title 2", "year": 2021, "publisher": "Publisher B"},
     ]
