@@ -22,7 +22,7 @@ def reference_creation():
     publisher = request.form.get("publisher")
 
     try:
-        validate_reference(title)
+        validate_reference(cite_key, title, year, publisher)
         reference = Reference({
             "cite_key": cite_key,
             "title": title,
