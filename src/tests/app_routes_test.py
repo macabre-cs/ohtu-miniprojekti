@@ -24,3 +24,4 @@ def test_create_reference_missing_title(mock_create):
         "publisher": "Publisher"
     }, follow_redirects=True)
     assert b"Title is required" in response.data
+    mock_create.assert_not_called()
