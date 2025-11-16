@@ -17,11 +17,10 @@ References app
         {{ reference }} 
       </div>
     </li>
+  {% else %}
+    <p>No references yet</p>
   {% endfor %}
 </ul>
-{% else %}
-  <p>No references yet</p>
-{% endif %}
 
 <div>
   <a href="/new_reference">Create new reference</a>
