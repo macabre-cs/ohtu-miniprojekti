@@ -11,7 +11,7 @@ def validate_reference(cite_key, title, year, publisher):
         raise ValueError("Year is required")
     try:
         int(year)
-    except (ValueError, TypeError):
-        raise ValueError("Year must be a valid number")
+    except (ValueError, TypeError) as exc:
+        raise ValueError("Year must be a valid number") from exc
     if not publisher or not publisher.strip():
         raise ValueError("Publisher is required")
