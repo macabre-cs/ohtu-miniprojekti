@@ -4,6 +4,7 @@ from repositories.reference_repository import get_references, create_reference
 from config import app, test_env
 from util import validate_reference
 from entities.reference import Reference
+from datetime import datetime
 
 @app.route("/")
 def index():
@@ -12,7 +13,7 @@ def index():
 
 @app.route("/new_reference")
 def new():
-    return render_template("new_reference.html")
+    return render_template("new_reference.html", curr_year=datetime.now().year)
 
 @app.route("/create_reference", methods=["POST"])
 def reference_creation():
