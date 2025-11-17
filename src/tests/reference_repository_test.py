@@ -8,8 +8,8 @@ def test_get_references(mock_db):
     # mock database with two reference entries
     mock_result = MagicMock()
     mock_result.mappings().all.return_value = [
-        {"id": 1, "cite_key": "key1", "title": "Title 1", "year": 2020, "publisher": "Publisher A"},
-        {"id": 2, "cite_key": "key2", "title": "Title 2", "year": 2021, "publisher": "Publisher B"},
+        {"id": 1, "cite_key": "key1", "title": "Title 1", "author": "Author 1", "year": 2020, "publisher": "Publisher A"},
+        {"id": 2, "cite_key": "key2", "title": "Title 2", "author": "Author 1; Author 2", "year": 2021, "publisher": "Publisher B"},
     ]
     # mock result
     mock_db.session.execute.return_value = mock_result
@@ -31,6 +31,7 @@ def test_create_reference(mock_db):
     reference_dict_test = {
         "cite_key": "key3",
         "title": "Title 3",
+        "author": "Author 3",
         "year": 2022,
         "publisher": "Publisher C"
         }
@@ -49,6 +50,7 @@ def test_create_reference(mock_db):
     assert "INSERT INTO references_table" in sql
     assert params["cite_key"] == "key3"
     assert params["title"] == "Title 3"
+    assert params["author"] == "Author 3"
     assert params["year"] == 2022
     assert params["publisher"] == "Publisher C"
 

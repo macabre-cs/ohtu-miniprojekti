@@ -7,7 +7,8 @@ def test_create_reference_success(mock_create):
     response = client.post("/create_reference", data={
         "cite_key": "key1",
         "title": "Title",
-        "year": "2020",
+        "authors_formatted": "Author One; Author Two",
+        "year": 2020,
         "publisher": "Publisher"
     })
     mock_create.assert_called_once()
@@ -20,6 +21,7 @@ def test_create_reference_missing_title(mock_create):
     response = client.post("/create_reference", data={
         "cite_key": "key1",
         "title": "",
+        "authors_formatted": "Author One",
         "year": "2020",
         "publisher": "Publisher"
     }, follow_redirects=True)
