@@ -2,7 +2,7 @@ class UserInputError(Exception):
     pass
 
 
-def validate_reference(cite_key, title, year, publisher, author):
+def validate_reference(cite_key, title, author, year, publisher):
     if not cite_key or not cite_key.strip():
         raise ValueError("Cite key is required")
     if not title or not title.strip():

@@ -21,14 +21,14 @@ def reference_creation():
     cite_key = request.form.get("cite_key")
     year = request.form.get("year")
     publisher = request.form.get("publisher")
-    authors = request.form.get("authors_formatted", "") 
+    author = request.form.get("authors_formatted") 
 
     try:
-        validate_reference(cite_key, title, year, publisher, authors)
+        validate_reference(cite_key, title, author, year, publisher)
         reference = Reference({
             "cite_key": cite_key,
             "title": title,
-            "author": authors,
+            "author": author,
             "year": year,
             "publisher": publisher
         })
