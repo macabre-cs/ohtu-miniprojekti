@@ -1,9 +1,17 @@
 class UserInputError(Exception):
     pass
 
-def validate_reference(content):
-    if len(content) < 5:
-        raise UserInputError("Reference content length must be greater than 4")
 
-    if len(content) > 100:
-          raise UserInputError("Reference content length must be smaller than 100")
+def validate_reference(cite_key, title, year, publisher):
+    if not cite_key or not cite_key.strip():
+        raise ValueError("Cite key is required")
+    if not title or not title.strip():
+        raise ValueError("Title is required")
+    if not year or not str(year).strip():
+        raise ValueError("Year is required")
+    try:
+        int(year)
+    except (ValueError, TypeError) as exc:
+        raise ValueError("Year must be a valid number") from exc
+    if not publisher or not publisher.strip():
+        raise ValueError("Publisher is required")
