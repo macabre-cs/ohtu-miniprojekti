@@ -4,26 +4,44 @@ Kanban board: https://trello.com/b/iLiKi0vL
 
 [![CI](https://github.com/macabre-cs/ohtu-miniprojekti/actions/workflows/ci.yaml/badge.svg)](https://github.com/macabre-cs/ohtu-miniprojekti/actions/workflows/ci.yaml)
 
+## Definition of Done
+
+* User storyille on määritelty hyväksymiskriteerit, jotka on kirjattu kunkin user storyn kuvaukseen.
+* User storyt ja niiden hyväksymiskriteerit löytyvät Kanban boardissa olevasta product backlogista.
+* Toteutetun koodin testikattavuuden tulee olla kohtuullinen.
+* Asiakas pääsee näkemään koko ajan koodin ja testien tilanteen CI-palvelusta.
+* Koodi on ylläpidettävyydeltään mahdollisimman hyvää: nimeäminen ja arkkitehtuuri on järkevää,
+* ja noudatetaan yhtenäistä koodityyliä (valvotaan Pylintin avulla)
+
+
 ## Sovelluksen asennus
 
-Kopioi Git-projekti omalle koneellesi:
+#### 1. Kopioi Git-projekti omalle koneellesi
 ```
 $ git clone git@github.com:macabre-cs/ohtu-miniprojekti.git 
 ```
+#### 2. Tietokanta
+Sovellus tarvitsee PostgreSQL-tietokannan. Käytä esim. pilvipalveluna tarjottavaa tietokantaa https://aiven.io.
 
-Asenna poetry
+Luo projektikansion juureen tiedosto `.env` ja kopioi sinne alla olevat tiedot.
+```
+DATABASE_URL=postgresql://xxxx
+TEST_ENV=true
+SECRET_KEY=kirjoita_secret_key_tähän
+```
+Lisää kohtaan `DATABASE_URL`linkki tietokantaan ja luo salainen avain kohtaan `SECRET_KEY`
 
+#### 3. Asenna poetry
 ```
 $ poetry install
 ```
-
-Siirry virtuaaliympäristöön
+#### 4. Siirry virtuaaliympäristöön
 ```
 $ eval $(poetry env activate) 
 ```
-
-Käynnistä sovellus
-
+#### 5. Käynnistä sovellus
 ```
 $ python3 src/index.py
 ```
+## Lisenssi
+Tämä projekti on lisensoitu [MIT-lisenssillä](https://github.com/macabre-cs/ohtu-miniprojekti/blob/main/LICENSE.md).
