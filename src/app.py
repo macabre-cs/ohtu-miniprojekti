@@ -1,10 +1,10 @@
+from datetime import datetime
 from flask import redirect, render_template, request, jsonify, flash
 from db_helper import reset_db
 from repositories.reference_repository import get_references, create_reference
 from config import app, test_env
 from util import validate_reference
 from entities.reference import Reference
-from datetime import datetime
 
 @app.route("/")
 def index():
@@ -21,7 +21,7 @@ def reference_creation():
     cite_key = request.form.get("cite_key")
     year = request.form.get("year")
     publisher = request.form.get("publisher")
-    author = request.form.get("authors_formatted") 
+    author = request.form.get("authors_formatted")
 
     try:
         validate_reference(cite_key, title, author, year, publisher)
@@ -44,3 +44,4 @@ if test_env:
     def reset_database():
         reset_db()
         return jsonify({ 'message': "db reset" })
+    
