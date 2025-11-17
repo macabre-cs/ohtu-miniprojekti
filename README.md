@@ -34,4 +34,4 @@ $ eval $(poetry env activate)
 $ python3 src/index.py
 ```
 ## Lisenssi
-Tämä projekti on lisensoitu MIT-lisenssillä.
+Tämä projekti on lisensoitu [MIT-lisenssillä](https://github.com/macabre-cs/ohtu-miniprojekti/blob/main/LICENSE.md).
