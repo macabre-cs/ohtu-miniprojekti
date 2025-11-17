@@ -33,3 +33,5 @@ $ eval $(poetry env activate)
 ```
 $ python3 src/index.py
 ```
+## Lisenssi
+Tämä projekti on lisensoitu MIT-lisenssillä.
