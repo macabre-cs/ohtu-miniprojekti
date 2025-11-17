@@ -4,6 +4,16 @@ Kanban board: https://trello.com/b/iLiKi0vL
 
 [![CI](https://github.com/macabre-cs/ohtu-miniprojekti/actions/workflows/ci.yaml/badge.svg)](https://github.com/macabre-cs/ohtu-miniprojekti/actions/workflows/ci.yaml)
 
+## Definition of Done
+
+* User storyille on määritelty hyväksymiskriteerit, jotka on kirjattu kunkin user storyn kuvaukseen.
+* User storyt ja niiden hyväksymiskriteerit löytyvät Kanban boardissa olevasta product backlogista.
+* Toteutetun koodin testikattavuuden tulee olla kohtuullinen.
+* Asiakas pääsee näkemään koko ajan koodin ja testien tilanteen CI-palvelusta.
+* Koodi on ylläpidettävyydeltään mahdollisimman hyvää: nimeäminen ja arkkitehtuuri on järkevää,
+* ja noudatetaan yhtenäistä koodityyliä (valvotaan Pylintin avulla)
+
+
 ## Sovelluksen asennus
 
 #### 1. Kopioi Git-projekti omalle koneellesi
