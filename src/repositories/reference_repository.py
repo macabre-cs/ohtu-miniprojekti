@@ -20,3 +20,20 @@ def create_reference(reference):
                              "year": reference.year,
                              "publisher": reference.publisher})
     db.session.commit()
+
+
+def delete_reference(cite_key):
+    sql = text("""DELETE FROM references_table WHERE cite_key = :cite_key""")
+    db.session.execute(sql, {"cite_key": cite_key})
+    db.session.commit()
+
+
+def get_reference(cite_key):
+    sql = text("""SELECT id, cite_key, author, title, year, publisher
+            FROM references_table WHERE cite_key = :cite_key""")
+    result = db.session.execute(sql, {"cite_key": cite_key})
+    row = result.mappings().first()
+    if not row:
+        return None
+
+    return Reference(row)

@@ -9,12 +9,11 @@ References app
 <h2>References app</h2>
 
 
-
 <ul>
   {% for reference in references %}
     <li style="display: flex">
       <div>
-        {{ reference }} 
+        <a href="/reference/{{ reference.cite_key }}">{{ reference }} </a>
       </div>
     </li>
   {% else %}
