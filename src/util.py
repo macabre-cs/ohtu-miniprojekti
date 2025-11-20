@@ -2,7 +2,9 @@ class UserInputError(Exception):
     pass
 
 
-def validate_reference(cite_key, title, author, year, publisher):
+def validate_reference(reference_type, cite_key, title, author, year):
+    if not reference_type or not reference_type.strip():
+        raise ValueError("Reference type is required")
     if not cite_key or not cite_key.strip():
         raise ValueError("Cite key is required")
     if not title or not title.strip():
@@ -15,5 +17,3 @@ def validate_reference(cite_key, title, author, year, publisher):
         int(year)
     except (ValueError, TypeError) as exc:
         raise ValueError("Year must be a valid number") from exc
-    if not publisher or not publisher.strip():
-        raise ValueError("Publisher is required")
