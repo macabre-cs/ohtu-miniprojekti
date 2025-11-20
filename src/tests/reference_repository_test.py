@@ -1,5 +1,5 @@
 from unittest.mock import MagicMock, patch
-from repositories.reference_repository import get_references, create_reference
+from repositories.reference_repository import get_references, create_reference, get_reference, delete_reference
 from entities.reference import Reference
 
 @patch("repositories.reference_repository.db")
@@ -55,4 +55,47 @@ def test_create_reference(mock_db):
     assert params["publisher"] == "Publisher C"
 
     # check that the function commits
+    mock_db.session.commit.assert_called_once()
+
+
+
+@patch("repositories.reference_repository.db")
+def test_get_reference_found(mock_db):
+
+    mock_result = MagicMock()
+    mock_result.mappings().first.return_value = {"id": 1, "cite_key": "key1", "title": "Title 1", "author": "Author 1", "year": 2020, "publisher": "Publisher A"}
+    mock_db.session.execute.return_value = mock_result
+
+    ref = get_reference(1)
+
+    assert isinstance(ref, Reference)
+    assert ref.title == "Title 1"
+    # ensure execute was called and id param forwarded
+    mock_db.session.execute.assert_called_once()
+    called_args, called_kwargs = mock_db.session.execute.call_args
+    params = called_args[1] if len(called_args) > 1 else called_kwargs
+    assert params["id"] == 1
+
+
+@patch("repositories.reference_repository.db")
+def test_get_reference_not_found(mock_db):
+
+    mock_result = MagicMock()
+    mock_result.mappings().first.return_value = None
+    mock_db.session.execute.return_value = mock_result
+
+    ref = get_reference(999)
+    assert ref is None
+    mock_db.session.execute.assert_called_once()
+
+
+@patch("repositories.reference_repository.db")
+def test_delete_reference(mock_db):
+    # call delete and ensure execute and commit are called with expected id
+    delete_reference(5)
+
+    mock_db.session.execute.assert_called_once()
+    called_args, called_kwargs = mock_db.session.execute.call_args
+    params = called_args[1] if len(called_args) > 1 else called_kwargs
+    assert params["id"] == 5
     mock_db.session.commit.assert_called_once()
