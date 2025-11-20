@@ -22,16 +22,16 @@ def create_reference(reference):
     db.session.commit()
 
 
-def delete_reference(cite_key):
-    sql = text("""DELETE FROM references_table WHERE cite_key = :cite_key""")
-    db.session.execute(sql, {"cite_key": cite_key})
+def delete_reference(ref_id):
+    sql = text("""DELETE FROM references_table WHERE id = :id""")
+    db.session.execute(sql, {"id": ref_id})
     db.session.commit()
 
 
-def get_reference(cite_key):
+def get_reference(ref_id):
     sql = text("""SELECT id, cite_key, author, title, year, publisher
-            FROM references_table WHERE cite_key = :cite_key""")
-    result = db.session.execute(sql, {"cite_key": cite_key})
+            FROM references_table WHERE id = :id""")
+    result = db.session.execute(sql, {"id": ref_id})
     row = result.mappings().first()
     if not row:
         return None

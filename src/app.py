@@ -39,14 +39,14 @@ def reference_creation():
         flash(str(error))
         return redirect("/new_reference")
 
-@app.route("/reference/<cite_key>")
-def show_reference(cite_key):
-    reference = get_reference(cite_key)
+@app.route("/reference/<ref_id>")
+def show_reference(ref_id):
+    reference = get_reference(ref_id)
     return render_template("show_reference.html", reference=reference)
 
-@app.route("/reference/<cite_key>/delete", methods=["GET", "POST"])
-def reference_deletion(cite_key):
-    reference = get_reference(cite_key)
+@app.route("/reference/<ref_id>/delete", methods=["GET", "POST"])
+def reference_deletion(ref_id):
+    reference = get_reference(ref_id)
     if not reference:
         return redirect("/")
 
@@ -55,10 +55,10 @@ def reference_deletion(cite_key):
 
     if request.method == "POST":
         if "delete" in request.form:
-            delete_reference(cite_key)
+            delete_reference(ref_id)
             return redirect("/")
 
-    return redirect("/reference/" + cite_key)
+    return redirect("/reference/" + ref_id)
 
 
 # testausta varten oleva reitti
