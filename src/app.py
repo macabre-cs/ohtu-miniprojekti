@@ -92,7 +92,7 @@ def edit_reference_route(ref_id):
             return redirect("/reference/" + ref_id)
         except Exception as error:
             flash(str(error))
-            return redirect(f"/references/{ref_id}/edit")
+            return redirect(f"/reference/{ref_id}/edit")
 
 
 # testausta varten oleva reitti
