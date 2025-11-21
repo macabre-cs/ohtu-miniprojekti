@@ -4,7 +4,7 @@ class Reference:
         self.reference_type = reference_dict.get('reference_type')
         self.cite_key = reference_dict.get('cite_key')
         self.title = reference_dict.get('title')
-        self.author = reference_dict.get('author')
+        self.author = reference_dict.get('authors_formatted')
         self.year = reference_dict.get('year')
         if self.reference_type == 'book':
             self.publisher = reference_dict.get('publisher')
@@ -18,8 +18,11 @@ class Reference:
 
     def __str__(self):
         if self.reference_type == 'book':
-            return f"{self.cite_key}: {self.title} ({self.year}), {self.author}, {self.publisher}, {self.chapter}"
+            return f"{self.cite_key}: {self.title} ({self.year}), {self.author}"
         elif self.reference_type == 'article':
-            return f"{self.cite_key}: {self.title} ({self.year}), {self.author}, {self.journal}, {self.volume}, {self.pages}"
+            return f"{self.cite_key}: {self.title} ({self.year}), {self.author}"
         elif self.reference_type == 'inproceedings':
-            return f"{self.cite_key}: {self.title} ({self.year}), {self.author}, {self.booktitle}"
+            return f"{self.cite_key}: {self.title} ({self.year}), {self.author}"
+        else:
+            # fallback so __str__ never returns None
+            return f"{self.cite_key or ''}: {self.title or ''} ({self.year or ''}), {self.author or ''}"

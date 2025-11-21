@@ -1,8 +1,9 @@
 from datetime import datetime
 from flask import redirect, render_template, request, jsonify, flash
 from db_helper import reset_db
-from repositories.reference_repository import get_reference, get_references
 from repositories.reference_repository import (
+    get_references,
+    get_reference,
     create_reference,
     delete_reference,
     edit_reference,
@@ -11,6 +12,8 @@ from repositories.reference_repository import (
 from config import app, test_env
 from util import validate_reference
 from entities.reference import Reference
+
+
 
 
 @app.route("/")
@@ -28,13 +31,6 @@ def new():
 def reference_creation():
     form_data = request.form.to_dict()
 
-    try:
-        validate_reference(form_data)
-        reference = Reference(form_data)
-        create_reference(reference)
-
-    #MAIN BRANCH
-
     def render_form():
         return render_template(
             "new_reference.html",
@@ -42,39 +38,17 @@ def reference_creation():
             **form_data,
         )
 
-    if form_data["cite_key"] and get_reference_by_cite_key(form_data["cite_key"]):
-        flash("Cite key already exists")
-        return render_form()
-
     try:
-        validate_reference(
-            form_data["cite_key"],
-            form_data["title"],
-            form_data["authors_formatted"],
-            form_data["year"],
-            form_data["publisher"],
-        )
-
-        new_ref = Reference(
-            {
-                "cite_key": form_data["cite_key"],
-                "title": form_data["title"],
-                "author": form_data["authors_formatted"],
-                "year": form_data["year"],
-                "publisher": form_data["publisher"],
-            }
-        )
-
-        create_reference(new_ref)
-    
-    #MAIN BRANCH ENDS
-
-
-        return redirect("/")
-
+        validate_reference(form_data)
+        reference = Reference(form_data)
+        create_reference(reference)
     except Exception as error:
         flash(str(error))
         return render_form()
+
+    return redirect("/")
+
+
 
 
 @app.route("/reference/<ref_id>")
@@ -116,13 +90,7 @@ def edit_reference_route(ref_id):
     if "cancel" in request.form:
         return redirect("/")
 
-    form_data = {
-        "cite_key": request.form.get("cite_key"),
-        "title": request.form.get("title"),
-        "author": request.form.get("authors_formatted"),
-        "year": request.form.get("year"),
-        "publisher": request.form.get("publisher"),
-    }
+    form_data = request.form.to_dict()
 
     def render_edit(data):
         return render_template(
@@ -137,7 +105,7 @@ def edit_reference_route(ref_id):
         return render_edit(form_data)
 
     try:
-        validate_reference(**form_data)
+        validate_reference(form_data)
         updated_reference = Reference(form_data)
         edit_reference(ref_id, updated_reference)
         return redirect(f"/reference/{ref_id}")
