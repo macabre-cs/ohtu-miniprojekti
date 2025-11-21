@@ -185,6 +185,7 @@ def test_delete_reference(mock_db):
 @patch("repositories.reference_repository.db")
 def test_edit_reference(mock_db):
     reference_dict_test = {
+        "reference_type": "book",
         "cite_key": "edited_key",
         "title": "Edited Title",
         "author": "Edited Author",

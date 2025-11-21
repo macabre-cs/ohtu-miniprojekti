@@ -5,6 +5,7 @@ from unittest.mock import patch
 def test_create_reference_success(mock_create):
     client = app.test_client()
     response = client.post("/create_reference", data={
+        "reference_type": "book",
         "cite_key": "key1",
         "title": "Title",
         "authors_formatted": "Author One; Author Two",
@@ -19,6 +20,7 @@ def test_create_reference_success(mock_create):
 def test_create_reference_missing_title(mock_create):
     client = app.test_client()
     response = client.post("/create_reference", data={
+        "reference_type": "book",
         "cite_key": "key1",
         "title": "",
         "authors_formatted": "Author One",
