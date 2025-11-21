@@ -7,7 +7,20 @@ from entities.reference import Reference
 def get_references():
     result = db.session.execute(
         text(
-            "SELECT id, cite_key, title, author, year, publisher FROM references_table"
+            """SELECT id,
+                      reference_type,
+                      cite_key,
+                      title,
+                      author,
+                      year,
+                      publisher,
+                      chapter,
+                      journal,
+                      volume,
+                      pages,
+                      booktitle,
+                      created_at
+            FROM references_table"""
         )
     )
     rows = result.mappings().all()
