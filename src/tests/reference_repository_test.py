@@ -1,5 +1,11 @@
 from unittest.mock import MagicMock, patch
-from repositories.reference_repository import get_references, create_reference, get_reference, delete_reference
+from repositories.reference_repository import (
+    get_references,
+    create_reference,
+    get_reference,
+    delete_reference,
+    edit_reference
+    )
 from entities.reference import Reference
 
 @patch("repositories.reference_repository.db")
@@ -98,4 +104,37 @@ def test_delete_reference(mock_db):
     called_args, called_kwargs = mock_db.session.execute.call_args
     params = called_args[1] if len(called_args) > 1 else called_kwargs
     assert params["id"] == 5
+    mock_db.session.commit.assert_called_once()
+
+
+@patch("repositories.reference_repository.db")
+def test_edit_reference(mock_db):
+    reference_dict_test = {
+        "cite_key": "edited_key",
+        "title": "Edited Title",
+        "author": "Edited Author",
+        "year": 2030,
+        "publisher": "Edited Publisher"
+    }
+
+    reference = Reference(reference_dict_test)
+
+    edit_reference(3, reference)
+
+    # ensure execute was called once
+    mock_db.session.execute.assert_called_once()
+    called_args, called_kwargs = mock_db.session.execute.call_args
+    sql = str(called_args[0])
+    params = called_args[1] if len(called_args) > 1 else called_kwargs
+
+    # check SQL and parameters
+    assert "UPDATE references_table" in sql
+    assert params["id"] == 3
+    assert params["cite_key"] == "edited_key"
+    assert params["title"] == "Edited Title"
+    assert params["author"] == "Edited Author"
+    assert params["year"] == 2030
+    assert params["publisher"] == "Edited Publisher"
+
+    # ensure commit was called
     mock_db.session.commit.assert_called_once()
