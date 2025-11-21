@@ -21,21 +21,17 @@ def create_reference(reference):
         """INSERT INTO references_table (cite_key, title, author, year, publisher)
                   VALUES (:cite_key, :title, :author, :year, :publisher)"""
     )
-    try:
-        db.session.execute(
-            sql,
-            {
-                "cite_key": reference.cite_key,
-                "title": reference.title,
-                "author": reference.author,
-                "year": reference.year,
-                "publisher": reference.publisher,
-            },
-        )
-        db.session.commit()
-    except IntegrityError as exc:
-        db.session.rollback()
-        raise UserInputError("Cite key already exists") from exc
+    db.session.execute(
+        sql,
+        {
+            "cite_key": reference.cite_key,
+            "title": reference.title,
+            "author": reference.author,
+            "year": reference.year,
+            "publisher": reference.publisher,
+        },
+    )
+    db.session.commit()
 
 
 def delete_reference(ref_id):
