@@ -49,8 +49,6 @@ def reference_creation():
     return redirect("/")
 
 
-
-
 @app.route("/reference/<ref_id>")
 def show_reference(ref_id):
     reference = get_reference(ref_id)

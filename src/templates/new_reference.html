@@ -31,7 +31,7 @@
 
   <label for="author">Author(s) add one per field (Lastname, Firstname):</label>
   <div id="author-fields">
-    {% set authors = (authors_formatted|default('')).split(';') %}
+    {% set authors = (authors_formatted|default('', true)).split(';') %}
     {% if authors and authors[0].strip() %}
       {% for a in authors %}
         <input type="text" name="authors" value="{{ a.strip() }}" />

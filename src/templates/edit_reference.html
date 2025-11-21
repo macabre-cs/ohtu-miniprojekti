@@ -2,7 +2,7 @@
 
 <h2>Edit reference</h2>
 
-<form action="/reference/{{ reference.id }}/edit" method="post">
+<form id="edit-ref-form" action="/reference/{{ reference.id }}/edit" method="post">
   {% with messages = get_flashed_messages() %} {% if messages %}
   <ul>
     {% for message in messages %}
@@ -10,6 +10,15 @@
     {% endfor %}
   </ul>
   {% endif %} {% endwith %}
+
+  <label for="reference_type">Reference Type:</label>
+  <select name="reference_type" id="reference_type" required>
+    <option value="book" {% if reference.reference_type == 'book' %}selected{% endif %}>Book</option>
+    <option value="article" {% if reference.reference_type == 'article' %}selected{% endif %}>Article</option>
+    <option value="inproceedings" {% if reference.reference_type == 'inproceedings' %}selected{% endif %}>Inproceedings</option>
+  </select>
+  <br />
+  <br />
 
   <label for="cite_key">Cite Key:</label>
   <input type="text" name="cite_key" value="{{ reference.cite_key or '' }}" required />
@@ -23,37 +32,42 @@
 
   <label for="author">Author(s) add one per field (Lastname, Firstname):</label>
   <div id="author-fields">
-    {% set authors = (reference.author|default('')).split(';') %}
-    {% if not authors[0].strip() %}
-    <input type="text" name="authors" />
+    {# prefer authors_formatted from a failed submit, otherwise use reference.author from DB #}
+    {% set authors_raw = authors_formatted if authors_formatted is defined else (reference.author or '') %}
+    {% set authors = (authors_raw).split(';') %}
+    {% if authors and authors[0].strip() %}
+      {% for a in authors %}
+        <input type="text" name="authors" value="{{ a.strip() }}" />
+      {% endfor %}
     {% else %}
-    {% for a in authors %}
-    <input type="text" name="authors" value="{{ a.strip() }}" />
-    {% endfor %}
+      <input type="text" name="authors" />
     {% endif %}
   </div>
   <button type="button" id="add-author">+ Add Author</button>
 
   <script>
-    document.getElementById("add-author").addEventListener("click", function (e) {
-      e.preventDefault();
-      const input = document.createElement("input");
-      input.type = "text";
-      input.name = "authors";
-      document.getElementById("author-fields").appendChild(input);
-    });
+    document
+      .getElementById("add-author")
+      .addEventListener("click", function (e) {
+        e.preventDefault();
+        const input = document.createElement("input");
+        input.type = "text";
+        input.name = "authors";
+        document.getElementById("author-fields").appendChild(input);
+      });
 
     // Format authors on form submit
-    document.querySelector("form").addEventListener("submit", function (e) {
+    document.getElementById("edit-ref-form").addEventListener("submit", function (e) {
       const authorInputs = document.querySelectorAll('input[name="authors"]');
       const authorNames = Array.from(authorInputs)
         .map((input) => input.value.trim())
         .filter((name) => name.length > 0);
-
+      
       // Remove any previous hidden authors_formatted input
       const existing = this.querySelector('input[name="authors_formatted"]');
       if (existing) existing.remove();
 
+      // Create hidden input with formatted authors
       const hiddenInput = document.createElement("input");
       hiddenInput.type = "hidden";
       hiddenInput.name = "authors_formatted";
@@ -65,14 +79,73 @@
   <br />
 
   <label for="year">Year:</label>
-  <input type="number" name="year" min="0" max="{{ curr_year }}" value="{{ reference.year or curr_year }}" required />
+  <input
+    type="number"
+    name="year"
+    min="0"
+    max="{{ curr_year }}"
+    value="{{ reference.year or curr_year }}"
+    required
+  />
   <br />
   <br />
 
-  <label for="publisher">Publisher:</label>
-  <input type="text" name="publisher" value="{{ reference.publisher or '' }}" required />
-  <br />
-  <br />
+  <div id="book-fields" style="display: none">
+    <label for="publisher">Publisher:</label>
+    <input type="text" name="publisher" value="{{ reference.publisher or '' }}" />
+    <br />
+    <br />
+
+    <label for="chapter">Chapter:</label>
+    <input type="text" name="chapter" value="{{ reference.chapter or '' }}" />
+    <br />
+    <br />
+  </div>
+
+  <div id="article-fields" style="display: none">
+    <label for="journal">Journal:</label>
+    <input type="text" name="journal" value="{{ reference.journal or '' }}" />
+    <br />
+    <br />
+
+    <label for="volume">Volume:</label>
+    <input type="text" name="volume" value="{{ reference.volume or '' }}" />
+    <br />
+    <br />
+
+    <label for="pages">Pages:</label>
+    <input type="text" name="pages" value="{{ reference.pages or '' }}" />
+    <br />
+    <br />
+  </div>
+
+  <div id="inproceedings-fields" style="display: none">
+    <label for="booktitle">Booktitle:</label>
+    <input type="text" name="booktitle" value="{{ reference.booktitle or '' }}" />
+    <br />
+    <br />
+  </div>
+
+  <script>
+    const refTypeSelect = document.getElementById("reference_type");
+
+    function showFields(type) {
+      document.getElementById("book-fields").style.display =
+        type === "book" ? "" : "none";
+      document.getElementById("article-fields").style.display =
+        type === "article" ? "" : "none";
+      document.getElementById("inproceedings-fields").style.display =
+        type === "inproceedings" ? "" : "none";
+    }
+
+    // Show fields on change
+    refTypeSelect.addEventListener("change", function () {
+      showFields(this.value);
+    });
+
+    // Initial show based on current reference type
+    showFields(refTypeSelect.value);
+  </script>
 
   <button type="submit">Save</button>
   <button type="submit" name="cancel" formnovalidate>Cancel</button>
