@@ -33,14 +33,16 @@ def test_get_references(mock_db):
 
 
 @patch("repositories.reference_repository.db")
-def test_create_reference(mock_db):
+def test_create_book_reference(mock_db):
     reference_dict_test = {
+        "reference_type": "book",
         "cite_key": "key3",
         "title": "Title 3",
         "author": "Author 3",
         "year": 2022,
-        "publisher": "Publisher C"
-        }
+        "publisher": "Publisher C",
+        "chapter": "Chapter 1"
+    }
 
     reference = Reference(reference_dict_test)
 
@@ -54,15 +56,88 @@ def test_create_reference(mock_db):
     sql = str(called_args[0])
     params = called_args[1] if len(called_args) > 1 else called_kwargs
     assert "INSERT INTO references_table" in sql
+    assert params["reference_type"] == "book"
     assert params["cite_key"] == "key3"
     assert params["title"] == "Title 3"
     assert params["author"] == "Author 3"
     assert params["year"] == 2022
     assert params["publisher"] == "Publisher C"
+    assert params["chapter"] == "Chapter 1"
 
     # check that the function commits
     mock_db.session.commit.assert_called_once()
 
+
+@patch("repositories.reference_repository.db")
+def test_create_article_reference(mock_db):
+    reference_dict_test = {
+        "reference_type": "article",
+        "cite_key": "key4",
+        "title": "Article Title",
+        "author": "Article Author",
+        "year": 2023,
+        "journal": "Journal X",
+        "volume": "42",
+        "pages": "10-20"
+    }
+
+    reference = Reference(reference_dict_test)
+
+    create_reference(reference)
+
+    # check that execute gets called
+    mock_db.session.execute.assert_called_once()
+
+    # check that the function uses correct parameters
+    called_args, called_kwargs = mock_db.session.execute.call_args
+    sql = str(called_args[0])
+    params = called_args[1] if len(called_args) > 1 else called_kwargs
+    assert "INSERT INTO references_table" in sql
+    assert params["reference_type"] == "article"
+    assert params["cite_key"] == "key4"
+    assert params["title"] == "Article Title"
+    assert params["author"] == "Article Author"
+    assert params["year"] == 2023
+    assert params["journal"] == "Journal X"
+    assert params["volume"] == "42"
+    assert params["pages"] == "10-20"
+
+    # check that the function commits
+    mock_db.session.commit.assert_called_once()
+
+
+@patch("repositories.reference_repository.db")
+def test_create_inproceedings_reference(mock_db):
+    reference_dict_test = {
+        "reference_type": "inproceedings",
+        "cite_key": "key5",
+        "title": "Inproc Title",
+        "author": "Inproc Author",
+        "year": 2024,
+        "booktitle": "Proceedings Y"
+    }
+
+    reference = Reference(reference_dict_test)
+
+    create_reference(reference)
+
+    # check that execute gets called
+    mock_db.session.execute.assert_called_once()
+
+    # check that the function uses correct parameters
+    called_args, called_kwargs = mock_db.session.execute.call_args
+    sql = str(called_args[0])
+    params = called_args[1] if len(called_args) > 1 else called_kwargs
+    assert "INSERT INTO references_table" in sql
+    assert params["reference_type"] == "inproceedings"
+    assert params["cite_key"] == "key5"
+    assert params["title"] == "Inproc Title"
+    assert params["author"] == "Inproc Author"
+    assert params["year"] == 2024
+    assert params["booktitle"] == "Proceedings Y"
+
+    # check that the function commits
+    mock_db.session.commit.assert_called_once()
 
 
 @patch("repositories.reference_repository.db")
