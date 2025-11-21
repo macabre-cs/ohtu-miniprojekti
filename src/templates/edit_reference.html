@@ -24,7 +24,7 @@
   <label for="author">Author(s) add one per field (Lastname, Firstname):</label>
   <div id="author-fields">
     {% set authors = (reference.author|default('')).split(';') %}
-    {% if authors|length == 0 %}
+    {% if not authors[0].strip() %}
     <input type="text" name="authors" />
     {% else %}
     {% for a in authors %}
