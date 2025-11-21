@@ -54,22 +54,18 @@ def edit_reference(ref_id, reference):
                       publisher = :publisher
                   WHERE id = :id"""
     )
-    try:
-        db.session.execute(
-            sql,
-            {
-                "id": ref_id,
-                "cite_key": reference.cite_key,
-                "title": reference.title,
-                "author": reference.author,
-                "year": reference.year,
-                "publisher": reference.publisher,
-            },
-        )
-        db.session.commit()
-    except IntegrityError as exc:
-        db.session.rollback()
-        raise UserInputError("Cite key already exists") from exc
+    db.session.execute(
+        sql,
+        {
+            "id": ref_id,
+            "cite_key": reference.cite_key,
+            "title": reference.title,
+            "author": reference.author,
+            "year": reference.year,
+            "publisher": reference.publisher,
+        },
+    )
+    db.session.commit()
 
 
 def get_reference(ref_id):
