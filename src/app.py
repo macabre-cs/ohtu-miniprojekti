@@ -2,7 +2,7 @@ from datetime import datetime
 from flask import redirect, render_template, request, jsonify, flash
 from db_helper import reset_db
 from repositories.reference_repository import get_reference, get_references
-from repositories.reference_repository import create_reference, delete_reference
+from repositories.reference_repository import create_reference, delete_reference, edit_reference
 from config import app, test_env
 from util import validate_reference
 from entities.reference import Reference
@@ -59,6 +59,40 @@ def reference_deletion(ref_id):
             return redirect("/")
 
     return redirect("/reference/" + ref_id)
+
+@app.route("/reference/<ref_id>/edit", methods=["GET", "POST"])
+def edit_reference_route(ref_id):
+    reference = get_reference(ref_id)
+    if not reference:
+        return redirect("/")
+
+    if request.method == "GET":
+        return render_template("edit_reference.html", reference=reference, curr_year=datetime.now().year)
+
+    if request.method == "POST":
+        if "cancel" in request.form:
+            return redirect("/")
+
+        title = request.form.get("title")
+        cite_key = request.form.get("cite_key")
+        year = request.form.get("year")
+        publisher = request.form.get("publisher")
+        author = request.form.get("authors_formatted")
+
+        try:
+            validate_reference(cite_key, title, author, year, publisher)
+            updated_reference = Reference({
+                "cite_key": cite_key,
+                "title": title,
+                "author": author,
+                "year": year,
+                "publisher": publisher
+            })
+            edit_reference(ref_id, updated_reference)
+            return redirect("/reference/" + ref_id)
+        except Exception as error:
+            flash(str(error))
+            return redirect(f"/references/{ref_id}/edit")
 
 
 # testausta varten oleva reitti

@@ -27,6 +27,21 @@ def delete_reference(ref_id):
     db.session.execute(sql, {"id": ref_id})
     db.session.commit()
 
+def edit_reference(ref_id, reference):
+    sql = text("""UPDATE references_table
+                  SET cite_key = :cite_key,
+                      title = :title,
+                      author = :author,
+                      year = :year,
+                      publisher = :publisher
+                  WHERE id = :id""")
+    db.session.execute(sql, {"id": ref_id,
+                             "cite_key": reference.cite_key,
+                             "title": reference.title,
+                             "author": reference.author,
+                             "year": reference.year,
+                             "publisher": reference.publisher})
+    db.session.commit()
 
 def get_reference(ref_id):
     sql = text("""SELECT id, cite_key, author, title, year, publisher
