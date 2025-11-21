@@ -79,7 +79,7 @@ def show_reference(ref_id):
 
 
 @app.route("/reference/<ref_id>/delete", methods=["GET", "POST"])
-def delete_reference(ref_id):
+def delete_reference_route(ref_id):
     reference = get_reference(ref_id)
     if not reference:
         return redirect("/")
@@ -96,7 +96,7 @@ def delete_reference(ref_id):
 
 
 @app.route("/reference/<ref_id>/edit", methods=["GET", "POST"])
-def edit_reference(ref_id):
+def edit_reference_route(ref_id):
     reference = get_reference(ref_id)
     if not reference:
         return redirect("/")
