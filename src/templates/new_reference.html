@@ -20,18 +20,25 @@
   <br />
   <br />
   <label for="cite_key">Cite Key:</label>
-  <input type="text" name="cite_key" required />
+  <input type="text" name="cite_key" value="{{ cite_key or '' }}" required />
   <br />
   <br />
 
   <label for="title">Title:</label>
-  <input type="text" name="title" required />
+  <input type="text" name="title" value="{{ title or '' }}" required />
   <br />
   <br />
 
   <label for="author">Author(s) add one per field (Lastname, Firstname):</label>
   <div id="author-fields">
-    <input type="text" name="authors" />
+    {% set authors = (authors_formatted|default('')).split(';') %}
+    {% if authors and authors[0].strip() %}
+      {% for a in authors %}
+        <input type="text" name="authors" value="{{ a.strip() }}" />
+      {% endfor %}
+    {% else %}
+      <input type="text" name="authors" />
+    {% endif %}
   </div>
   <button type="button" id="add-author">+ Add Author</button>
   <script>
@@ -51,6 +58,10 @@
       const authorNames = Array.from(authorInputs)
         .map((input) => input.value.trim())
         .filter((name) => name.length > 0);
+      
+      // Remove any previous hidden authors_formatted input
+      const existing = this.querySelector('input[name="authors_formatted"]');
+      if (existing) existing.remove();
 
       // Create hidden input with formatted authors
       const hiddenInput = document.createElement("input");
@@ -69,7 +80,7 @@
     name="year"
     min="0"
     max="{{ curr_year }}"
-    value="{{ curr_year }}"
+    value="{{ year or curr_year }}"
     required
   />
   <br />

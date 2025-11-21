@@ -1,59 +1,155 @@
 from datetime import datetime
 from flask import redirect, render_template, request, jsonify, flash
 from db_helper import reset_db
-from repositories.reference_repository import get_references, create_reference
+from repositories.reference_repository import get_reference, get_references
+from repositories.reference_repository import (
+    create_reference,
+    delete_reference,
+    edit_reference,
+    get_reference_by_cite_key,
+)
 from config import app, test_env
 from util import validate_reference
 from entities.reference import Reference
+
 
 @app.route("/")
 def index():
     references = get_references()
     return render_template("index.html", references=references)
 
+
 @app.route("/new_reference")
 def new():
     return render_template("new_reference.html", curr_year=datetime.now().year)
 
+
 @app.route("/create_reference", methods=["POST"])
 def reference_creation():
-    reference_type = request.form.get("reference_type")
-    title = request.form.get("title")
-    cite_key = request.form.get("cite_key")
-    year = request.form.get("year")
-    publisher = request.form.get("publisher")
-    author = request.form.get("authors_formatted")
-    chapter = request.form.get("chapter")
-    journal = request.form.get("journal")
-    volume = request.form.get("volume")
-    pages = request.form.get("pages")
-    booktitle = request.form.get("booktitle")
+    form_data = request.form.to_dict()
 
     try:
-        validate_reference(reference_type, cite_key, title, author, year)
-        reference = Reference({
-            "reference_type": reference_type,
-            "cite_key": cite_key,
-            "title": title,
-            "author": author,
-            "year": year,
-            "publisher": publisher,
-            "chapter": chapter,
-            "journal": journal,
-            "volume": volume,
-            "pages": pages,
-            "booktitle": booktitle
-            
-        })
+        validate_reference(form_data)
+        reference = Reference(form_data)
         create_reference(reference)
+
+    #MAIN BRANCH
+
+    def render_form():
+        return render_template(
+            "new_reference.html",
+            curr_year=datetime.now().year,
+            **form_data,
+        )
+
+    if form_data["cite_key"] and get_reference_by_cite_key(form_data["cite_key"]):
+        flash("Cite key already exists")
+        return render_form()
+
+    try:
+        validate_reference(
+            form_data["cite_key"],
+            form_data["title"],
+            form_data["authors_formatted"],
+            form_data["year"],
+            form_data["publisher"],
+        )
+
+        new_ref = Reference(
+            {
+                "cite_key": form_data["cite_key"],
+                "title": form_data["title"],
+                "author": form_data["authors_formatted"],
+                "year": form_data["year"],
+                "publisher": form_data["publisher"],
+            }
+        )
+
+        create_reference(new_ref)
+    
+    #MAIN BRANCH ENDS
+
+
         return redirect("/")
+
     except Exception as error:
         flash(str(error))
-        return redirect("/new_reference")
+        return render_form()
+
+
+@app.route("/reference/<ref_id>")
+def show_reference(ref_id):
+    reference = get_reference(ref_id)
+    return render_template("show_reference.html", reference=reference)
+
+
+@app.route("/reference/<ref_id>/delete", methods=["GET", "POST"])
+def delete_reference_route(ref_id):
+    reference = get_reference(ref_id)
+    if not reference:
+        return redirect("/")
+
+    if request.method == "GET":
+        return render_template("delete_reference.html", reference=reference)
+
+    if request.method == "POST":
+        if "delete" in request.form:
+            delete_reference(ref_id)
+            return redirect("/")
+
+    return redirect("/reference/" + ref_id)
+
+
+@app.route("/reference/<ref_id>/edit", methods=["GET", "POST"])
+def edit_reference_route(ref_id):
+    reference = get_reference(ref_id)
+    if not reference:
+        return redirect("/")
+
+    if request.method == "GET":
+        return render_template(
+            "edit_reference.html",
+            reference=reference,
+            curr_year=datetime.now().year,
+        )
+
+    if "cancel" in request.form:
+        return redirect("/")
+
+    form_data = {
+        "cite_key": request.form.get("cite_key"),
+        "title": request.form.get("title"),
+        "author": request.form.get("authors_formatted"),
+        "year": request.form.get("year"),
+        "publisher": request.form.get("publisher"),
+    }
+
+    def render_edit(data):
+        return render_template(
+            "edit_reference.html",
+            reference=Reference({**data, "id": ref_id}),
+            curr_year=datetime.now().year,
+        )
+
+    existing = get_reference_by_cite_key(form_data["cite_key"])
+    if existing and str(existing.id) != str(ref_id):
+        flash("Cite key already exists")
+        return render_edit(form_data)
+
+    try:
+        validate_reference(**form_data)
+        updated_reference = Reference(form_data)
+        edit_reference(ref_id, updated_reference)
+        return redirect(f"/reference/{ref_id}")
+    except Exception as error:
+        flash(str(error))
+        return render_edit(form_data)
+
 
 # testausta varten oleva reitti
 if test_env:
+
     @app.route("/reset_db")
     def reset_database():
         reset_db()
-        return jsonify({ 'message': "db reset" })
+        return jsonify({"message": "db reset"})

@@ -1,0 +1,23 @@
+{% extends "layout.html" %}
+
+{% block title %}{{  reference.title  }}{% endblock %}
+
+{% block body %}
+
+<h2>Reference information</h2>
+<ul>
+    <li style="display: flex">
+      <div>
+        {{ reference }}
+      </div>
+    </li>
+</ul>
+
+<p>
+  <a href="/" class="link_button">Home page</a>
+  <a href="/reference/{{ reference.id }}/delete" class="link_button">Delete</a>
+  <a href="/reference/{{ reference.id }}/edit" class="link_button">Edit</a>
+</p>
+
+
+{% endblock %}
