@@ -6,8 +6,7 @@ from repositories.reference_repository import (
     get_reference,
     create_reference,
     delete_reference,
-    edit_reference,
-    get_reference_by_cite_key,
+    edit_reference
 )
 from config import app, test_env
 from util import validate_reference, validate_cite_key
