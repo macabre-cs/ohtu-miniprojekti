@@ -1,0 +1,44 @@
+body {
+  margin: auto;
+  max-width: 50em;
+  font-family: sans-serif;
+}
+
+/* Reference card styles */
+.references-list {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  padding: 0;
+  margin: 0 0 1.25rem 0;
+}
+
+.reference-card {
+  border: 1px solid #e0e0e0;
+  padding: 1rem;
+  border-radius: 8px;
+  background: #ffffff;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.04);
+}
+
+.reference-header {
+  margin-bottom: 0.5rem;
+}
+
+.reference-title {
+  font-family: sans-serif;
+  font-size: 1.5 rem;
+  font-weight: 700;
+  color: #111111;
+  text-decoration: none;
+}
+
+.reference-title:hover {
+  text-decoration: underline;
+}
+
+.reference-meta p {
+  margin: 0.25rem 0;
+  color: #333333;
+  font-size: 0.95rem;
+}
