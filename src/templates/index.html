@@ -11,31 +11,33 @@ References app
   <a href="/new_reference">Create new reference</a>
 </div>
 <br>
-<div class="references-list">
-  {% for reference in references %}
-    <div class="reference-card">
-      <div class="reference-header">
-        <a class="reference-title" href="/reference/{{ reference.id }}">{{ reference.title }}</a>
-      </div>
+<li style="display: flex">
+  <div class="references-list">
+    {% for reference in references %}
+      <div class="reference-card">
+        <div class="reference-header">
+          <a class="reference-title" href="/reference/{{ reference.id }}">{{ reference.title }}</a>
+        </div>
 
-      <div class="reference-meta">
-        <p><strong>Author(s):</strong> {{ reference.author }}</p>
-        <p><strong>Year:</strong> {{ reference.year }}</p>
-        <p><strong>Type:</strong> {{ reference.reference_type }}</p>
-        <p><strong>Cite key:</strong> {{ reference.cite_key }}</p>
+        <div class="reference-meta">
+          <p><strong>Author(s):</strong> {{ reference.author }}</p>
+          <p><strong>Year:</strong> {{ reference.year }}</p>
+          <p><strong>Type:</strong> {{ reference.reference_type }}</p>
+          <p><strong>Cite key:</strong> {{ reference.cite_key }}</p>
 
-        {% if reference.reference_type == "book" %}
-          {% if reference.publisher %}<p><strong>Publisher:</strong> {{ reference.publisher }}</p>{% endif %}
-          {% if reference.chapter %}<p><strong>Chapter:</strong> {{ reference.chapter }}</p>{% endif %}
-        {% elif reference.reference_type == "article" %}
-          {% if reference.journal %}<p><strong>Journal:</strong> {{ reference.journal }}</p>{% endif %}
-          {% if reference.volume %}<p><strong>Volume:</strong> {{ reference.volume }}</p>{% endif %}
-          {% if reference.pages %}<p><strong>Pages:</strong> {{ reference.pages }}</p>{% endif %}
-        {% elif reference.reference_type == "inproceedings" %}
-          {% if reference.booktitle %}<p><strong>Booktitle:</strong> {{ reference.booktitle }}</p>{% endif %}
-        {% endif %}
+          {% if reference.reference_type == "book" %}
+            {% if reference.publisher %}<p><strong>Publisher:</strong> {{ reference.publisher }}</p>{% endif %}
+            {% if reference.chapter %}<p><strong>Chapter:</strong> {{ reference.chapter }}</p>{% endif %}
+          {% elif reference.reference_type == "article" %}
+            {% if reference.journal %}<p><strong>Journal:</strong> {{ reference.journal }}</p>{% endif %}
+            {% if reference.volume %}<p><strong>Volume:</strong> {{ reference.volume }}</p>{% endif %}
+            {% if reference.pages %}<p><strong>Pages:</strong> {{ reference.pages }}</p>{% endif %}
+          {% elif reference.reference_type == "inproceedings" %}
+            {% if reference.booktitle %}<p><strong>Booktitle:</strong> {{ reference.booktitle }}</p>{% endif %}
+          {% endif %}
+        </div>
       </div>
-    </div>
+  </li>
   {% else %}
     <p>No references yet</p>
   {% endfor %}
