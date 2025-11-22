@@ -2,9 +2,10 @@ from app import app
 from unittest.mock import patch
 
 @patch("app.create_reference")
-def test_create_reference_success(mock_create):
+def test_create_book_reference_success(mock_create):
     client = app.test_client()
     response = client.post("/create_reference", data={
+        "reference_type": "book",
         "cite_key": "key1",
         "title": "Title",
         "authors_formatted": "Author One; Author Two",
@@ -16,9 +17,43 @@ def test_create_reference_success(mock_create):
     assert "/" in response.headers["Location"]
 
 @patch("app.create_reference")
+def test_create_article_reference_success(mock_create):
+    client = app.test_client()
+    response = client.post("/create_reference", data={
+        "reference_type": "article",
+        "cite_key": "key1",
+        "title": "Title",
+        "authors_formatted": "Author Three; Author Four",
+        "year": 2021,
+        "publisher": "Publisher",
+        "journal": "Journal 1",
+        "volume": "Volume 2",
+        "pages": "10-20"
+    })
+    mock_create.assert_called_once()
+    assert response.status_code == 302
+    assert "/" in response.headers["Location"]
+
+@patch("app.create_reference")
+def test_create_inproc_reference_success(mock_create):
+    client = app.test_client()
+    response = client.post("/create_reference", data={
+        "reference_type": "inproceedings",
+        "cite_key": "key1",
+        "title": "Title",
+        "authors_formatted": "Author Three; Author Four",
+        "year": 2021,
+        "booktitle": "TestBookTitle"
+    })
+    mock_create.assert_called_once()
+    assert response.status_code == 302
+    assert "/" in response.headers["Location"]
+
+@patch("app.create_reference")
 def test_create_reference_missing_title(mock_create):
     client = app.test_client()
     response = client.post("/create_reference", data={
+        "reference_type": "book",
         "cite_key": "key1",
         "title": "",
         "authors_formatted": "Author One",
