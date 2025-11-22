@@ -1,3 +1,5 @@
+# pylint: disable=too-many-instance-attributes
+
 class Reference:
     def __init__(self, reference_dict):
         self.id = reference_dict.get('id')
@@ -17,12 +19,9 @@ class Reference:
             self.booktitle = reference_dict.get('booktitle')
 
     def __str__(self):
-        if self.reference_type == 'book':
-            return f"{self.cite_key}: {self.title} ({self.year}), {self.author}"
-        elif self.reference_type == 'article':
-            return f"{self.cite_key}: {self.title} ({self.year}), {self.author}"
-        elif self.reference_type == 'inproceedings':
-            return f"{self.cite_key}: {self.title} ({self.year}), {self.author}"
-        else:
-            # fallback so __str__ never returns None
-            return f"{self.cite_key or ''}: {self.title or ''} ({self.year or ''}), {self.author or ''}"
+        cite = self.cite_key or ""
+        title = self.title or ""
+        year = self.year or ""
+        author = self.author or ""
+
+        return f"{cite}: {title} ({year}), {author}"
