@@ -144,7 +144,7 @@ def edit_reference(ref_id, reference):
 
 def get_reference(ref_id):
     sql = text(
-        """SELECT id, cite_key, author, title, year, publisher
+        """SELECT id, reference_type, cite_key, author, title, year, publisher
             FROM references_table WHERE id = :id"""
     )
     result = db.session.execute(sql, {"id": ref_id})
