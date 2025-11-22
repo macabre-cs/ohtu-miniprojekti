@@ -10,7 +10,7 @@ from repositories.reference_repository import (
     get_reference_by_cite_key,
 )
 from config import app, test_env
-from util import validate_reference
+from util import validate_reference, validate_cite_key
 from entities.reference import Reference
 
 
@@ -39,6 +39,7 @@ def reference_creation():
         )
 
     try:
+        validate_cite_key(form_data.get("cite_key"))
         validate_reference(form_data)
         reference = Reference(form_data)
         create_reference(reference)
@@ -97,12 +98,8 @@ def edit_reference_route(ref_id):
             curr_year=datetime.now().year,
         )
 
-    existing = get_reference_by_cite_key(form_data["cite_key"])
-    if existing and str(existing.id) != str(ref_id):
-        flash("Cite key already exists")
-        return render_edit(form_data)
-
     try:
+        validate_cite_key(form_data.get("cite_key"), exclude_id=ref_id)
         validate_reference(form_data)
         updated_reference = Reference(form_data)
         edit_reference(ref_id, updated_reference)
