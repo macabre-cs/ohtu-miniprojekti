@@ -39,24 +39,90 @@ def delete_reference(ref_id):
 
 
 def edit_reference(ref_id, reference):
+    if reference.reference_type == 'book':
+        edit_book_ref(ref_id, reference)
+    elif reference.reference_type == 'article':
+        edit_article_ref(ref_id, reference)
+    elif reference.reference_type == 'inproceedings':
+        edit_inproceedings_ref(ref_id, reference)
+
+def edit_book_ref(ref_id, reference):
     sql = text(
         """UPDATE references_table
-                  SET cite_key = :cite_key,
+                  SET reference_type = :reference_type,
+                      cite_key = :cite_key,
                       title = :title,
                       author = :author,
                       year = :year,
-                      publisher = :publisher
+                      publisher = :publisher,
+                      chapter = :chapter
                   WHERE id = :id"""
     )
     db.session.execute(
         sql,
         {
             "id": ref_id,
+            "reference_type": reference.reference_type,
             "cite_key": reference.cite_key,
             "title": reference.title,
             "author": reference.author,
             "year": reference.year,
             "publisher": reference.publisher,
+            "chapter": reference.chapter
+        },
+    )
+    db.session.commit()
+
+def edit_article_ref(ref_id, reference):
+    sql = text(
+        """UPDATE references_table
+           SET reference_type = :reference_type,
+               cite_key = :cite_key,
+               title = :title,
+               author = :author,
+               year = :year,
+               journal = :journal,
+               volume = :volume,
+               pages = :pages
+           WHERE id = :id"""
+    )
+    db.session.execute(
+        sql,
+        {
+            "id": ref_id,
+            "reference_type": reference.reference_type,
+            "cite_key": reference.cite_key,
+            "title": reference.title,
+            "author": reference.author,
+            "year": reference.year,
+            "journal": reference.journal,
+            "volume": reference.volume,
+            "pages": reference.pages,
+        },
+    )
+    db.session.commit()
+
+def edit_inproceedings_ref(ref_id, reference):
+    sql = text(
+        """UPDATE references_table
+           SET reference_type = :reference_type,
+               cite_key = :cite_key,
+               title = :title,
+               author = :author,
+               year = :year,
+               booktitle = :booktitle
+           WHERE id = :id"""
+    )
+    db.session.execute(
+        sql,
+        {
+            "id": ref_id,
+            "reference_type": reference.reference_type,
+            "cite_key": reference.cite_key,
+            "title": reference.title,
+            "author": reference.author,
+            "year": reference.year,
+            "booktitle": reference.booktitle,
         },
     )
     db.session.commit()
@@ -64,7 +130,22 @@ def edit_reference(ref_id, reference):
 
 def get_reference(ref_id):
     sql = text(
+<<<<<<< Updated upstream
         """SELECT id, cite_key, author, title, year, publisher
+=======
+        """SELECT id, 
+                  reference_type,
+                  cite_key, 
+                  title,
+                  author, 
+                  year, 
+                  publisher, 
+                  chapter, 
+                  journal, 
+                  volume, 
+                  pages, 
+                  booktitle
+>>>>>>> Stashed changes
             FROM references_table WHERE id = :id"""
     )
     result = db.session.execute(sql, {"id": ref_id})
