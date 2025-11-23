@@ -147,7 +147,13 @@ def edit_reference_route(ref_id):
         return render_edit(form_data)
 
     try:
-        validate_reference(**form_data)
+        validate_reference(
+            form_data["cite_key"],
+            form_data["title"],
+            form_data["author"],
+            form_data["year"],
+            form_data["publisher"],
+        )
         updated_reference = Reference(form_data)
         edit_reference(ref_id, updated_reference)
         return redirect(f"/reference/{ref_id}")
