@@ -32,6 +32,11 @@ def reference_creation():
         "authors_formatted": request.form.get("authors_formatted") or "",
         "year": request.form.get("year"),
         "publisher": request.form.get("publisher"),
+        "chapter": request.form.get("chapter"),
+        "journal": request.form.get("journal"),
+        "volume": request.form.get("volume"),
+        "pages": request.form.get("pages"),
+        "booktitle": request.form.get("booktitle"),
     }
 
     def render_form():
@@ -61,6 +66,11 @@ def reference_creation():
                 "author": form_data["authors_formatted"],
                 "year": form_data["year"],
                 "publisher": form_data["publisher"],
+                "chapter": form_data["chapter"],
+                "journal": form_data["journal"],
+                "volume": form_data["volume"],
+                "pages": form_data["pages"],
+                "booktitle": form_data["booktitle"],
             }
         )
 
@@ -117,6 +127,11 @@ def edit_reference_route(ref_id):
         "author": request.form.get("authors_formatted"),
         "year": request.form.get("year"),
         "publisher": request.form.get("publisher"),
+        "chapter": request.form.get("chapter"),
+        "journal": request.form.get("journal"),
+        "volume": request.form.get("volume"),
+        "pages": request.form.get("pages"),
+        "booktitle": request.form.get("booktitle"),
     }
 
     def render_edit(data):

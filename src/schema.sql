@@ -5,13 +5,10 @@ CREATE TABLE references_table (
   author TEXT NOT NULL,
   year INTEGER,
   publisher TEXT,
-<<<<<<< Updated upstream
-=======
   chapter TEXT,
   journal TEXT,
   volume TEXT,
   pages TEXT,
   booktitle TEXT,
->>>>>>> Stashed changes
   created_at TIMESTAMP DEFAULT NOW()
 );

@@ -11,6 +11,16 @@
     {% endfor %}
   </ul>
   {% endif %} {% endwith %}
+  
+  <label for="reference_type">Reference Type:</label>
+  <select name="reference_type" id="reference_type">
+    <option value="book">Book</option>
+    <option value="article">Article</option>
+    <option value="inproceedings">Inproceedings</option>
+  </select>
+  <br />
+  <br />
+  
   <label for="cite_key">Cite Key:</label>
   <input type="text" name="cite_key" value="{{ cite_key or '' }}" required />
   <br />
@@ -62,6 +72,17 @@
       hiddenInput.value = authorNames.join("; ");
       this.appendChild(hiddenInput);
     });
+    
+    // Show/hide fields based on reference type
+    function updateFields() {
+      const refType = document.getElementById("reference_type").value;
+      document.getElementById("book-fields").style.display = (refType === "book") ? "block" : "none";
+      document.getElementById("article-fields").style.display = (refType === "article") ? "block" : "none";
+      document.getElementById("inproceedings-fields").style.display = (refType === "inproceedings") ? "block" : "none";
+    }
+    
+    document.getElementById("reference_type").addEventListener("change", updateFields);
+    updateFields();
   </script>
   <br />
   <br />
@@ -78,10 +99,41 @@
   <br />
   <br />
 
-  <label for="publisher">Publisher:</label>
-  <input type="text" name="publisher" value="{{ publisher or '' }}" required />
-  <br />
-  <br />
+  <div id="book-fields">
+    <label for="publisher">Publisher:</label>
+    <input type="text" name="publisher" value="{{ publisher or '' }}" />
+    <br />
+    <br />
+    
+    <label for="chapter">Chapter:</label>
+    <input type="text" name="chapter" value="{{ chapter or '' }}" />
+    <br />
+    <br />
+  </div>
+
+  <div id="article-fields" style="display:none;">
+    <label for="journal">Journal:</label>
+    <input type="text" name="journal" value="{{ journal or '' }}" />
+    <br />
+    <br />
+    
+    <label for="volume">Volume:</label>
+    <input type="text" name="volume" value="{{ volume or '' }}" />
+    <br />
+    <br />
+    
+    <label for="pages">Pages:</label>
+    <input type="text" name="pages" value="{{ pages or '' }}" />
+    <br />
+    <br />
+  </div>
+
+  <div id="inproceedings-fields" style="display:none;">
+    <label for="booktitle">Booktitle:</label>
+    <input type="text" name="booktitle" value="{{ booktitle or '' }}" />
+    <br />
+    <br />
+  </div>
 
   <button type="submit">Create</button>
 </form>
