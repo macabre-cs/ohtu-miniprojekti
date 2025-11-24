@@ -45,3 +45,7 @@ $ python3 src/index.py
 ```
 ## Lisenssi
 Tämä projekti on lisensoitu [MIT-lisenssillä](https://github.com/macabre-cs/ohtu-miniprojekti/blob/main/LICENSE.md).
+
+
+## Burndown käyrät
+Burndown käyrät löytyvät tästä linkistä: https://helsinkifi-my.sharepoint.com/:x:/g/personal/hagemish_ad_helsinki_fi/IQDURxOvWrbPQI5Zl9wIH1KXASOO2_BHTrvS6rvcSFaz6tg
