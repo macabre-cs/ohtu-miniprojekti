@@ -1,17 +1,15 @@
 CREATE TABLE references_table (
   id SERIAL PRIMARY KEY,
+  reference_type TEXT NOT NULL,
   cite_key TEXT NOT NULL UNIQUE,
   title TEXT NOT NULL,
   author TEXT NOT NULL,
-  year INTEGER,
+  year INTEGER NOT NULL,
   publisher TEXT,
-<<<<<<< Updated upstream
-=======
   chapter TEXT,
   journal TEXT,
   volume TEXT,
   pages TEXT,
   booktitle TEXT,
->>>>>>> Stashed changes
   created_at TIMESTAMP DEFAULT NOW()
 );
