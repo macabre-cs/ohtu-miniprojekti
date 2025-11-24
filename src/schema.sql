@@ -8,7 +8,7 @@ CREATE TABLE references_table (
   publisher TEXT,
   chapter TEXT,
   journal TEXT,
-  volume INTEGER,
+  volume TEXT,
   pages TEXT,
   booktitle TEXT,
   created_at TIMESTAMP DEFAULT NOW()
