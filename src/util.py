@@ -14,7 +14,7 @@ def validate_reference(reference_dict):
         raise ValueError("Cite key is required")
     if not value("title"):
         raise ValueError("Title is required")
-    if not value("authors_formatted"):
+    if not value("author"):
         raise ValueError("Author(s) is/are required")
 
     year_raw = reference_dict.get("year")

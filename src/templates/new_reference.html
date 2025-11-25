@@ -31,46 +31,12 @@
 
   <label for="author">Author(s) add one per field (Lastname, Firstname):</label>
   <div id="author-fields">
-    {% set authors = (authors_formatted|default('', true)).split(';') %}
-    {% if authors and authors[0].strip() %}
-      {% for a in authors %}
-        <input type="text" name="authors" value="{{ a.strip() }}" />
-      {% endfor %}
-    {% else %}
-      <input type="text" name="authors" />
-    {% endif %}
+    <div class="author-row">
+      <input type="text" name="authors_raw" required />
+    </div>
   </div>
+
   <button type="button" id="add-author">+ Add Author</button>
-  <script>
-    document
-      .getElementById("add-author")
-      .addEventListener("click", function (e) {
-        e.preventDefault();
-        const input = document.createElement("input");
-        input.type = "text";
-        input.name = "authors";
-        document.getElementById("author-fields").appendChild(input);
-      });
-
-    // Format authors on form submit
-    document.querySelector("form").addEventListener("submit", function (e) {
-      const authorInputs = document.querySelectorAll('input[name="authors"]');
-      const authorNames = Array.from(authorInputs)
-        .map((input) => input.value.trim())
-        .filter((name) => name.length > 0);
-      
-      // Remove any previous hidden authors_formatted input
-      const existing = this.querySelector('input[name="authors_formatted"]');
-      if (existing) existing.remove();
-
-      // Create hidden input with formatted authors
-      const hiddenInput = document.createElement("input");
-      hiddenInput.type = "hidden";
-      hiddenInput.name = "authors_formatted";
-      hiddenInput.value = authorNames.join("; ");
-      this.appendChild(hiddenInput);
-    });
-  </script>
   <br />
   <br />
 
@@ -85,64 +51,16 @@
   />
   <br />
   <br />
-  <div id="book-fields" style="display: none">
-    <label for="publisher">Publisher:</label>
-    <input type="text" name="publisher" />
-    <br />
-    <br />
+  <div id="dynamic-fields"></div>
 
-    <label for="chapter">Chapter:</label>
-    <input type="text" name="chapter" />
-    <br />
-    <br />
-  </div>
-
-  <div id="article-fields" style="display: none">
-    <label for="journal">Journal:</label>
-    <input type="text" name="journal" />
-    <br />
-    <br />
-
-    <label for="volume">Volume:</label>
-    <input type="text" name="volume" />
-    <br />
-    <br />
-
-    <label for="pages">Pages:</label>
-    <input type="text" name="pages" />
-    <br />
-    <br />
-  </div>
-
-  <div id="inproceedings-fields" style="display: none">
-    <label for="booktitle">Booktitle:</label>
-    <input type="text" name="booktitle" />
-    <br />
-    <br />
-  </div>
-
-  <script>
-    const refTypeSelect = document.getElementById("reference_type");
-
-    function showFields(type) {
-      document.getElementById("book-fields").style.display =
-        type === "book" ? "" : "none";
-      document.getElementById("article-fields").style.display =
-        type === "article" ? "" : "none";
-      document.getElementById("inproceedings-fields").style.display =
-        type === "inproceedings" ? "" : "none";
-    }
-
-    // Show fields on change
-    refTypeSelect.addEventListener("change", function () {
-      showFields(this.value);
-    });
-
-    // Initial show based on default selection
-    showFields(refTypeSelect.value);
-  </script>
-
+  <button type="button" onclick="window.location.href='/'">Cancel</button>
   <button type="submit">Create</button>
 </form>
+
+<script>
+  const REFERENCE_ID = "none";
+</script>
+
+<script src="{{ url_for('static', filename='main.js') }}"></script>
 
 {% endblock %}

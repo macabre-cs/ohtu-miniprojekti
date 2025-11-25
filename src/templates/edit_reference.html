@@ -32,49 +32,27 @@
 
   <label for="author">Author(s) add one per field (Lastname, Firstname):</label>
   <div id="author-fields">
-    {# prefer authors_formatted from a failed submit, otherwise use reference.author from DB #}
-    {% set authors_raw = authors_formatted if authors_formatted is defined else (reference.author or '') %}
-    {% set authors = (authors_raw).split(';') %}
-    {% if authors and authors[0].strip() %}
-      {% for a in authors %}
-        <input type="text" name="authors" value="{{ a.strip() }}" />
+    {% set formatted = reference.author or '' %}
+    {% set raw = formatted.split(';') %}
+    {% if raw and raw[0].strip() %}
+      {% for a in raw %}
+      <div class="author-row">
+        {% if loop.first %}
+        <input type="text" name="authors_raw" value="{{ a.strip() }}" required />
+        {% else %}
+        <input type="text" name="authors_raw" value="{{ a.strip() }}" />
+        <button type="button" class="remove-author">×</button>
+        {% endif %}
+      </div>
       {% endfor %}
     {% else %}
-      <input type="text" name="authors" />
+      <div class="author-row">
+        <input type="text" name="authors_raw" required />
+      </div>
     {% endif %}
   </div>
+
   <button type="button" id="add-author">+ Add Author</button>
-
-  <script>
-    document
-      .getElementById("add-author")
-      .addEventListener("click", function (e) {
-        e.preventDefault();
-        const input = document.createElement("input");
-        input.type = "text";
-        input.name = "authors";
-        document.getElementById("author-fields").appendChild(input);
-      });
-
-    // Format authors on form submit
-    document.getElementById("edit-ref-form").addEventListener("submit", function (e) {
-      const authorInputs = document.querySelectorAll('input[name="authors"]');
-      const authorNames = Array.from(authorInputs)
-        .map((input) => input.value.trim())
-        .filter((name) => name.length > 0);
-      
-      // Remove any previous hidden authors_formatted input
-      const existing = this.querySelector('input[name="authors_formatted"]');
-      if (existing) existing.remove();
-
-      // Create hidden input with formatted authors
-      const hiddenInput = document.createElement("input");
-      hiddenInput.type = "hidden";
-      hiddenInput.name = "authors_formatted";
-      hiddenInput.value = authorNames.join("; ");
-      this.appendChild(hiddenInput);
-    });
-  </script>
   <br />
   <br />
 
@@ -90,65 +68,15 @@
   <br />
   <br />
 
-  <div id="book-fields" style="display: none">
-    <label for="publisher">Publisher:</label>
-    <input type="text" name="publisher" value="{{ reference.publisher or '' }}" />
-    <br />
-    <br />
-
-    <label for="chapter">Chapter:</label>
-    <input type="text" name="chapter" value="{{ reference.chapter or '' }}" />
-    <br />
-    <br />
-  </div>
-
-  <div id="article-fields" style="display: none">
-    <label for="journal">Journal:</label>
-    <input type="text" name="journal" value="{{ reference.journal or '' }}" />
-    <br />
-    <br />
-
-    <label for="volume">Volume:</label>
-    <input type="text" name="volume" value="{{ reference.volume or '' }}" />
-    <br />
-    <br />
-
-    <label for="pages">Pages:</label>
-    <input type="text" name="pages" value="{{ reference.pages or '' }}" />
-    <br />
-    <br />
-  </div>
-
-  <div id="inproceedings-fields" style="display: none">
-    <label for="booktitle">Booktitle:</label>
-    <input type="text" name="booktitle" value="{{ reference.booktitle or '' }}" />
-    <br />
-    <br />
-  </div>
-
-  <script>
-    const refTypeSelect = document.getElementById("reference_type");
-
-    function showFields(type) {
-      document.getElementById("book-fields").style.display =
-        type === "book" ? "" : "none";
-      document.getElementById("article-fields").style.display =
-        type === "article" ? "" : "none";
-      document.getElementById("inproceedings-fields").style.display =
-        type === "inproceedings" ? "" : "none";
-    }
-
-    // Show fields on change
-    refTypeSelect.addEventListener("change", function () {
-      showFields(this.value);
-    });
-
-    // Initial show based on current reference type
-    showFields(refTypeSelect.value);
-  </script>
+  <div id="dynamic-fields"></div>
 
   <button type="submit">Save</button>
   <button type="submit" name="cancel" formnovalidate>Cancel</button>
 </form>
 
+<script>
+  const REFERENCE_ID = "{{ reference.id }}";
+</script>
+
+<script src="{{ url_for('static', filename='main.js') }}"></script>
 {% endblock %}
