@@ -25,3 +25,25 @@ class Reference:
         author = self.author or ""
 
         return f"{cite}: {title} ({year}), {author}"
+
+    def __iter__(self):
+        result = {
+            'id': self.id,
+            'reference_type': self.reference_type,
+            'cite_key': self.cite_key,
+            'title': self.title,
+            'author': self.author,
+            'year': self.year
+        }
+
+        if self.reference_type == 'book':
+            result['publisher'] = self.publisher
+            result['chapter'] = self.chapter
+        elif self.reference_type == 'article':
+            result['journal'] = self.journal
+            result['volume'] = self.volume
+            result['pages'] = self.pages
+        elif self.reference_type == 'inproceedings':
+            result['booktitle'] = self.booktitle
+
+        return iter(result.items())
