@@ -1,9 +1,45 @@
+/* Main CSS file for the References App */
+/* Define color variables for buttons */
+:root {
+  /* Colors */
+  --neutral: #6c757d;
+  --neutral-hover: #5a6268;
+
+  --cancel: #ff4d4d;
+  --cancel-hover: #e60000;
+
+  --create: #28a745;
+  --create-hover: #218838;
+
+  /* Form */
+  --border-light: #cccccc;
+  --border-form: #dddddd;
+
+  /* Buttons */
+  --btn-text: #ffffff;
+  --btn-radius: 4px;
+  --btn-padding: 0.5rem 1rem;
+
+  /* Focus */
+  --focus-color: #007bff;
+}
+
 body {
   margin: auto;
   max-width: 50em;
   font-family: sans-serif;
 }
-
+/*Title styles*/
+.head-form {
+  text-align: left;
+  font-family: sans-serif;
+  font-size: 1.5rem;
+  font-weight: 700;
+  margin-top: 1rem;
+  margin-bottom: 1rem;
+  margin-left: 5%;
+  color: #111111;
+}
 /* Reference card styles */
 .references-list {
   display: flex;
@@ -18,7 +54,7 @@ body {
   padding: 1rem;
   border-radius: 8px;
   background: #ffffff;
-  box-shadow: 0 1px 4px rgba(0,0,0,0.04);
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.04);
   width: 100%;
   box-sizing: border-box;
 }
@@ -43,4 +79,133 @@ body {
   margin: 0.25rem 0;
   color: #333333;
   font-size: 0.95rem;
+}
+
+.form {
+  width: 90%;
+  margin: 1rem auto 2rem auto;
+  padding: 1.5rem;
+
+  background: #ffffff;
+  border: 1px solid var(--border-form);
+  border-radius: 8px;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.04);
+  box-sizing: border-box;
+
+  align-self: center;
+}
+
+/* ================================
+   REQUIRED FIELD INDICATOR
+================================ */
+.required {
+  color: rgb(230, 0, 0);
+  margin-left: 3px;
+  font-weight: bold;
+}
+
+/* ================================
+   FORM FIELDS
+================================ */
+.form-field {
+  width: 100%;
+  padding: 0.5rem;
+  margin-bottom: 0.5rem;
+
+  border: 1px solid var(--border-light);
+  border-radius: 4px;
+  box-sizing: border-box;
+}
+
+/* Labels */
+.form-field label {
+  display: block;
+  margin-bottom: 0.2rem;
+  font-weight: 600;
+}
+
+/* Inputs + Selects */
+.form-field input,
+.form-field select {
+  width: 100%;
+  padding: 0.5rem;
+  border: 1px solid var(--border-light);
+  border-radius: 4px;
+  box-sizing: border-box;
+  font-size: 1rem;
+}
+
+/* Focus styles */
+.form-field input:focus,
+.form-field select:focus {
+  border-color: var(--focus-color);
+  outline: none;
+  box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
+}
+
+/* ================================
+   AUTHOR FIELDS
+================================ */
+.form-field .author-row {
+  display: flex;
+  align-items: center;
+  margin-bottom: 0.5rem;
+}
+
+/* Make space for remove button */
+.form-field #author {
+  width: 85%;
+}
+
+/* ================================
+   BUTTONS (GLOBAL)
+================================ */
+button {
+  color: var(--btn-text);
+  border: none;
+  padding: var(--btn-padding);
+  border-radius: var(--btn-radius);
+  cursor: pointer;
+  margin-right: 0.5rem;
+}
+
+/* Style variants */
+.btn-neutral {
+  background: var(--neutral);
+}
+.btn-neutral:hover {
+  background: var(--neutral-hover);
+}
+
+.btn-cancel {
+  background: var(--cancel);
+}
+.btn-cancel:hover {
+  background: var(--cancel-hover);
+}
+
+.btn-create {
+  background: var(--create);
+}
+.btn-create:hover {
+  background: var(--create-hover);
+}
+
+/* Author field buttons */
+.remove-author {
+  margin-left: 0.5rem;
+  padding: 0.3rem 0.6rem;
+}
+.remove-author {
+  background: var(--cancel);
+}
+.remove-author:hover {
+  background: var(--cancel-hover);
+}
+
+#add-author {
+  background: var(--create);
+}
+#add-author:hover {
+  background: var(--create-hover);
 }

@@ -1,9 +1,15 @@
 <div>
-  <label for="publisher">Publisher:</label>
-  <input type="text" name="publisher" value="{{ reference.publisher or '' }}" />
-  <br /><br />
+  <div class="form-field">
+    <label for="publisher">Publisher</label>
+    <input
+      type="text"
+      name="publisher"
+      value="{{ reference.publisher or '' }}"
+    />
+  </div>
 
-  <label for="chapter">Chapter:</label>
-  <input type="text" name="chapter" value="{{ reference.chapter or '' }}" />
-  <br /><br />
+  <div class="form-field">
+    <label for="chapter">Chapter</label>
+    <input type="text" name="chapter" value="{{ reference.chapter or '' }}" />
+  </div>
 </div>

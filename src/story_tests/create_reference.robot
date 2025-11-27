@@ -7,7 +7,7 @@ Test Setup    Reset References
 *** Test Cases ***
 Create Book Reference Successfully
 	Go To    ${HOME_URL}
-	Click Link    Create new reference
+	Click Button    Create a new reference
 
 	Select From List By Value    name=reference_type    book
 	Input Text    name=cite_key    BOOK1
@@ -28,7 +28,7 @@ Create Book Reference Successfully
 
 Create Article Reference Successfully
 	Go To    ${HOME_URL}
-	Click Link    Create new reference
+	Click Button    Create a new reference
 
 	Select From List By Value    name=reference_type    article
 	Input Text    name=cite_key    ARTICLE1
@@ -51,7 +51,7 @@ Create Article Reference Successfully
 
 Create Inproceedings Reference Successfully
 	Go To    ${HOME_URL}
-	Click Link    Create new reference
+	Click Button    Create a new reference
 
 	Select From List By Value    name=reference_type    inproceedings
 	Input Text    name=cite_key    INPROCEEDINGS1
