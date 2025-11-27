@@ -7,7 +7,6 @@ class Reference:
         self.cite_key = reference_dict.get('cite_key')
         self.title = reference_dict.get('title')
         self.author = reference_dict.get('authors_formatted') or reference_dict.get('author')
-        self.authors_raw = reference_dict.get('authors_raw')
         self.year = reference_dict.get('year')
         if self.reference_type == 'book':
             self.publisher = reference_dict.get('publisher')
