@@ -3,6 +3,7 @@
 Kanban board: https://trello.com/b/iLiKi0vL 
 
 [![CI](https://github.com/macabre-cs/ohtu-miniprojekti/actions/workflows/ci.yaml/badge.svg)](https://github.com/macabre-cs/ohtu-miniprojekti/actions/workflows/ci.yaml)
+[![codecov](https://codecov.io/gh/macabre-cs/ohtu-miniprojekti/graph/badge.svg?token=ZRMDJ6XTL5)](https://codecov.io/gh/macabre-cs/ohtu-miniprojekti)
 
 ## Definition of Done
 
