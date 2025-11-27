@@ -46,6 +46,7 @@ def reference_creation():
     form_data = request.form.to_dict()
     formatted = format_authors(authors_raw)
     form_data["author"] = formatted
+    form_data["authors"] = authors_raw
 
     def render_form():
         return render_template(
