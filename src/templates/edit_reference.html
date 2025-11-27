@@ -38,16 +38,16 @@
       {% for a in raw %}
       <div class="author-row">
         {% if loop.first %}
-        <input type="text" name="authors_raw" value="{{ a.strip() }}" required />
+        <input type="text" name="authors" value="{{ a.strip() }}" required />
         {% else %}
-        <input type="text" name="authors_raw" value="{{ a.strip() }}" />
+        <input type="text" name="authors" value="{{ a.strip() }}" />
         <button type="button" class="remove-author">×</button>
         {% endif %}
       </div>
       {% endfor %}
     {% else %}
       <div class="author-row">
-        <input type="text" name="authors_raw" required />
+        <input type="text" name="authors" required />
       </div>
     {% endif %}
   </div>

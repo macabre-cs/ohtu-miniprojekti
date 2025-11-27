@@ -36,16 +36,17 @@ def load_fields(ref_type, ref_id):
     }
     if ref_type not in templates:
         return "Invalid reference type", 400
-    
+
     return render_template(templates[ref_type], reference=reference)
 
 
 @app.route("/create_reference", methods=["POST"])
 def reference_creation():
-    authors_raw = request.form.getlist("authors_raw")
+    authors_raw = request.form.getlist("authors")
     form_data = request.form.to_dict()
-    form_data["author"] = format_authors(authors_raw)
-    
+    formatted = format_authors(authors_raw)
+    form_data["author"] = formatted
+
     def render_form():
         return render_template(
             "new_reference.html",
@@ -104,9 +105,10 @@ def edit_reference_route(ref_id):
     if "cancel" in request.form:
         return redirect("/")
 
-    authors_raw = request.form.getlist("authors_raw")
+    authors_raw = request.form.getlist("authors")
     form_data = request.form.to_dict()
-    form_data["author"] = format_authors(authors_raw)
+    formatted = format_authors(authors_raw)
+    form_data["author"] = formatted
 
     def render_edit(data):
         return render_template(

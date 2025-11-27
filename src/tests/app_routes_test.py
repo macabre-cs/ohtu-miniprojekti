@@ -8,7 +8,7 @@ def test_create_book_reference_success(mock_create):
         "reference_type": "book",
         "cite_key": "key1",
         "title": "Title",
-        "authors_formatted": "Author One; Author Two",
+        "author": "Author One; Author Two",
         "year": 2020,
         "publisher": "Publisher"
     })
@@ -23,7 +23,7 @@ def test_create_article_reference_success(mock_create):
         "reference_type": "article",
         "cite_key": "key1",
         "title": "Title",
-        "authors_formatted": "Author Three; Author Four",
+        "author": "Author Three; Author Four",
         "year": 2021,
         "publisher": "Publisher",
         "journal": "Journal 1",
@@ -41,7 +41,7 @@ def test_create_inproc_reference_success(mock_create):
         "reference_type": "inproceedings",
         "cite_key": "key1",
         "title": "Title",
-        "authors_formatted": "Author Three; Author Four",
+        "author": "Author Three; Author Four",
         "year": 2021,
         "booktitle": "TestBookTitle"
     })
@@ -56,7 +56,7 @@ def test_create_reference_missing_title(mock_create):
         "reference_type": "book",
         "cite_key": "key1",
         "title": "",
-        "authors_formatted": "Author One",
+        "author": "Author One",
         "year": "2020",
         "publisher": "Publisher"
     }, follow_redirects=True)
