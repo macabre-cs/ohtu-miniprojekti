@@ -39,3 +39,31 @@ Asiat, joita tiimin olisi hyvä aloittaa, liittyivät ensisijaisesti tiimin sis�
 * Jokainen ilmoittaa aktiivisemmin muille tiimiläisille, kun itse alkaa tehdä jotakin sprintin taskeja tai jos on suunnitellut tekevänsä jonkin tietyn taskin.
 * Jokainen merkitsee itsensä tekijäksi valitsemiinsa taskeihin projektin kanban-tauluun. Lisäksi taskeihin voi myös laittaa kommentteja, esim. milloin aikoo työstää taskia.
 * Versionhallinta: Sovittiin, että nimetään branchit kehitettävän featuren eikä tekijän mukaan. Pieniä muutoksia voi tehdä suoraan main-branchiin pull requestien sijaan.
+
+
+### Sprintti 2
+
+Sprintin 2 retrospektiivi pidettiin [Glad, Sad, Mad](https://retrospectivewiki.org/index.php?title=Glad,_Sad,_Mad) tekniikalla. Post it lapuille kerättiin sprintin aikana huomattuja positiivisia (glad), negatiivisia (sad) sekä ongelmallisia (mad) asioita, joista keskusteltiin yhdessä. Negatiivisiin ja ongelmallisiin kohtiin pohdittiin myös ratkaisuja/kehityskohteita. Retrospektiivissä kesti noin 20 minuuttia.
+
+**Glad**
+
+* Kommunikaatiota oli enemmän
+* Työtä tehtiin tasaisesti
+* Uudet branchien nimet olivat hyviä
+* Yhteistyö toimi hyvin
+* Asiakastapaamiseen valmistauduttiin hyvin
+
+**Sad**
+* Merge-vaikeudet
+* Kommunikaatio hukkuu discordiin
+  * Lisätään kanavia tarpeen vaatiessa
+* HTML:n seassa oleva JS tekee templateista epäselviä/hankalia
+  * Refaktoroidaan
+
+**Mad**
+* Vibe koodausta
+  * Yritetään käyttää AI:ta harkitsevammin.
+* Trello joskus jäljessä
+  * Muistetaan päivittää
+* Bugi asiakkaan demossa
+  * Selvitetään ja lisätään testi bugia varten
