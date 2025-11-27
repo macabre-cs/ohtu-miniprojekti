@@ -10,7 +10,7 @@ class TestValidateReference(unittest.TestCase):
                 "reference_type": "book",
                 "cite_key": "key1",
                 "title": "Title",
-                "authors_formatted": "Author",
+                "author": "Author",
                 "year": 2020,
                 "publisher": "Publisher",
             })
@@ -23,7 +23,7 @@ class TestValidateReference(unittest.TestCase):
                 "reference_type": "book",
                 "cite_key": "",
                 "title": "Title",
-                "authors_formatted": "Author",
+                "author": "Author",
                 "year": 2020,
                 "publisher": "Publisher",
             })
@@ -35,7 +35,7 @@ class TestValidateReference(unittest.TestCase):
                 "reference_type": "book",
                 "cite_key": "key1",
                 "title": "",
-                "authors_formatted": "Author",
+                "author": "Author",
                 "year": 2020,
                 "publisher": "Publisher",
             })
@@ -47,7 +47,7 @@ class TestValidateReference(unittest.TestCase):
                 "reference_type": "book",
                 "cite_key": "key1",
                 "title": "Title",
-                "authors_formatted": "",
+                "author": "",
                 "year": 2020,
                 "publisher": "Publisher",
             })
@@ -59,7 +59,7 @@ class TestValidateReference(unittest.TestCase):
                 "reference_type": "book",
                 "cite_key": "key1",
                 "title": "Title",
-                "authors_formatted": "Author",
+                "author": "Author",
                 "year": "abcd",
                 "publisher": "Publisher",
             })

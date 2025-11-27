@@ -12,8 +12,9 @@ from config import app, test_env
 from util import validate_reference, validate_cite_key
 from entities.reference import Reference
 
-
-
+def format_authors(authors):
+    cleaned = [a.strip() for a in authors if a.strip()]
+    return "; ".join(cleaned)
 
 @app.route("/")
 def index():
@@ -25,10 +26,27 @@ def index():
 def new():
     return render_template("new_reference.html", curr_year=datetime.now().year)
 
+@app.route("/load_fields/<ref_type>/<ref_id>", methods=["GET"])
+def load_fields(ref_type, ref_id):
+    reference = get_reference(ref_id) if ref_id != "none" else None
+    templates = {
+        "book": "new_book.html",
+        "article": "new_article.html",
+        "inproceedings": "new_inproceedings.html"
+    }
+    if ref_type not in templates:
+        return "Invalid reference type", 400
+
+    return render_template(templates[ref_type], reference=reference)
+
 
 @app.route("/create_reference", methods=["POST"])
 def reference_creation():
+    authors_raw = request.form.getlist("authors")
     form_data = request.form.to_dict()
+    formatted = format_authors(authors_raw)
+    form_data["author"] = formatted
+    form_data["authors"] = authors_raw
 
     def render_form():
         return render_template(
@@ -88,7 +106,10 @@ def edit_reference_route(ref_id):
     if "cancel" in request.form:
         return redirect("/")
 
+    authors_raw = request.form.getlist("authors")
     form_data = request.form.to_dict()
+    formatted = format_authors(authors_raw)
+    form_data["author"] = formatted
 
     def render_edit(data):
         return render_template(
