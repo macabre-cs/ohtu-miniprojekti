@@ -18,7 +18,7 @@ References app
     {% for reference in references %}
       <div class="reference-card">
         <div class="reference-header">
-          <input type="checkbox" name="reference_ids" value="{{ reference.id }}">
+          <input type="checkbox" name="reference_ids" value="{{ reference.id }}" id="checkbox-{{ loop.index }}">
           <a class="reference-title" href="/reference/{{ reference.id }}">{{ reference.title }}</a>
         </div>
 
