@@ -8,13 +8,13 @@ References app
 <h2>References app</h2>
 
 <form action="/export_bibtex" method="POST">
-<div>
-  <a href="/new_reference">Create new reference</a>
-  <button type="submit">Export BibTeX</button>
-</div>
-<br>
+  <div>
+    <a href="/new_reference">Create new reference</a>
+    <button type="submit">Export BibTeX</button>
+  </div>
+  <br>
 
-<div class="references-list">
+  <div class="references-list">
     {% for reference in references %}
       <div class="reference-card">
         <div class="reference-header">
