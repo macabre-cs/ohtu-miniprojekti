@@ -7,7 +7,7 @@ Test Setup    Reset References
 *** Test Cases ***
 Export Bibtex Successfully
 	Go To    ${HOME_URL}
-	Click Link    Create new reference
+	Click Button    Create a new reference
 
 	Select From List By Value    name=reference_type    book
 	Input Text    name=cite_key    Citekey1
