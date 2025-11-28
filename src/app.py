@@ -6,16 +6,18 @@ from repositories.reference_repository import (
     get_reference,
     create_reference,
     delete_reference,
-    edit_reference
+    edit_reference,
 )
 from config import app, test_env
 from util import validate_reference, validate_cite_key
 from entities.reference import Reference
 from bibtex_generator import generate_bibtex
 
+
 def format_authors(authors):
     cleaned = [a.strip() for a in authors if a.strip()]
     return "; ".join(cleaned)
+
 
 @app.route("/")
 def index():
@@ -25,7 +27,26 @@ def index():
 
 @app.route("/new_reference")
 def new():
-    return render_template("new_reference.html", curr_year=datetime.now().year)
+    # jos DOI annettu, välitetään se new_reference käsiteltäväksi
+    doi = request.args.get("doi")
+    return render_template("new_reference.html", curr_year=datetime.now().year, doi=doi)
+
+
+# Placeholder DOI sivu, josta käyttäjä voi syöttää DOI:n.
+# Käyttäjä ohjataan new_reference-sivulle, jossa DOI voidaan käyttää lomakkeen esitäyttämiseen.
+# HUOM TÄTÄ LOGIIKKAA EI OLE VIELÄ TEHTY!! TÄMÄ ON VAIN VALMIS POHJA DOI:N SYÖTTÖÄ VARTEN!!
+@app.route("/new_reference_doi", methods=["GET", "POST"])
+def new_reference_doi():
+    if request.method == "POST":
+        doi = request.form.get("doi", "").strip()
+        if not doi:
+            flash("Please enter a DOI")
+            return render_template("new_reference_doi.html")
+        # Ohjataan new_reference-sivulle, jossa DOI:ta voidaan käyttää lomakkeen täyttämiseen
+        return redirect(f"/new_reference?doi={doi}")
+
+    return render_template("new_reference_doi.html")
+
 
 @app.route("/load_fields/<ref_type>/<ref_id>", methods=["GET"])
 def load_fields(ref_type, ref_id):
@@ -33,7 +54,7 @@ def load_fields(ref_type, ref_id):
     templates = {
         "book": "new_book.html",
         "article": "new_article.html",
-        "inproceedings": "new_inproceedings.html"
+        "inproceedings": "new_inproceedings.html",
     }
     if ref_type not in templates:
         return "Invalid reference type", 400
@@ -145,7 +166,7 @@ def export_bibtex():
     return Response(
         bibtex,
         mimetype="text/plain",
-        headers={"Content-Disposition": "attachment;filename=references.bib"}
+        headers={"Content-Disposition": "attachment;filename=references.bib"},
     )
 
 

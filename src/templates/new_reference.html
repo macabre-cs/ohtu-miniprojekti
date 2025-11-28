@@ -11,6 +11,15 @@
     {% endfor %}
   </ul>
   {% endif %} {% endwith %}
+
+  {# Näytä DOI, jos se on annettu. Tämä mahdollistaa myöhemmin tehtävän prefill logiikan #}
+  {% if doi %}
+  <div class="form-field">
+    <label for="doi">DOI (fetched)<span class="required">*</span></label>
+    <input type="text" name="doi" id="doi" value="{{ doi }}" readonly />
+  </div>
+  {% endif %}
+
   <div class="form-field">
     <label for="reference_type"
       >Reference Type<span class="required">*</span></label
