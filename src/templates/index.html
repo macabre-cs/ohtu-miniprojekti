@@ -9,10 +9,13 @@ block body %}
 </div>
 <br />
 
+<form action="/export_bibtex" method="POST">
+  <button type="submit">Export BibTeX</button>
 <div class="references-list">
   {% for reference in references %}
   <div class="reference-card">
     <div class="reference-header">
+      <input type="checkbox" name="reference_ids" value="{{ reference.id }}" id="checkbox-{{ loop.index }}">
       <a class="reference-title" href="/reference/{{ reference.id }}"
         >{{ reference.title }}</a
       >
@@ -45,5 +48,5 @@ block body %}
   <p>No references yet</p>
   {% endfor %}
 </div>
-
+</form>
 {% endblock %}

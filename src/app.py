@@ -1,5 +1,5 @@
 from datetime import datetime
-from flask import redirect, render_template, request, jsonify, flash
+from flask import redirect, render_template, request, jsonify, flash, Response
 from db_helper import reset_db
 from repositories.reference_repository import (
     get_references,
@@ -11,6 +11,7 @@ from repositories.reference_repository import (
 from config import app, test_env
 from util import validate_reference, validate_cite_key
 from entities.reference import Reference
+from bibtex_generator import generate_bibtex
 
 def format_authors(authors):
     cleaned = [a.strip() for a in authors if a.strip()]
@@ -127,6 +128,25 @@ def edit_reference_route(ref_id):
     except Exception as error:
         flash(str(error))
         return render_edit(form_data)
+
+
+@app.route("/export_bibtex", methods=["POST"])
+def export_bibtex():
+    reference_ids = request.form.getlist("reference_ids")
+
+    if not reference_ids:
+        flash("No references selected")
+        return redirect("/")
+
+    references = [get_reference(ref_id) for ref_id in reference_ids]
+
+    bibtex = generate_bibtex(references)
+
+    return Response(
+        bibtex,
+        mimetype="text/plain",
+        headers={"Content-Disposition": "attachment;filename=references.bib"}
+    )
 
 
 # testausta varten oleva reitti
