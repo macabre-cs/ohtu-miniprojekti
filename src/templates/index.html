@@ -2,15 +2,15 @@
 block body %}
 <h2>References app</h2>
 
-<form action="/export_bibtex" method="POST">
 <div>
   <button class="btn-create" onclick="window.location.href='/new_reference'">
     Create a new reference
   </button>
-  <button type="submit">Export BibTeX</button>
 </div>
 <br />
 
+<form action="/export_bibtex" method="POST">
+  <button type="submit">Export BibTeX</button>
 <div class="references-list">
   {% for reference in references %}
   <div class="reference-card">
