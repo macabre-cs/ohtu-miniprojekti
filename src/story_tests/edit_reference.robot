@@ -7,7 +7,7 @@ Test Setup    Reset References
 *** Test Cases ***
 Edit Book Reference Updates Fields
 	Go To    ${HOME_URL}
-	Click Link    Create new reference
+	Click Button    Create a new reference
 
 	Select From List By Value    name=reference_type    book
 	Input Text    name=cite_key    BOOK1
@@ -22,7 +22,7 @@ Edit Book Reference Updates Fields
 	Page Should Contain    Original Book Title
 	Click Element    xpath=//a[contains(., "Original Book Title")]
 
-	Click Element    xpath=//a[contains(@href, "/edit")]
+	Click Button   Edit reference
 
     Input Text    name=cite_key    BOOK2
 	Input Text    name=title    Updated Book Title
@@ -46,7 +46,7 @@ Edit Book Reference Updates Fields
 
 Edit Article Reference Updates Fields
 	Go To    ${HOME_URL}
-	Click Link    Create new reference
+	Click Button    Create a new reference
 
 	Select From List By Value    name=reference_type    article
 	Input Text    name=cite_key    ART1
@@ -62,7 +62,7 @@ Edit Article Reference Updates Fields
 	Page Should Contain    Original Article Title
 	Click Element    xpath=//a[contains(., "Original Article Title")]
 
-	Click Element    xpath=//a[contains(@href, "/edit")]
+	Click Button	Edit reference
 
     Input Text    name=cite_key    ART2
 	Input Text    name=title    Updated Article Title
@@ -88,7 +88,7 @@ Edit Article Reference Updates Fields
 
 Edit Inproceedings Reference Updates Fields
 	Go To    ${HOME_URL}
-	Click Link    Create new reference
+	Click Button    Create a new reference
 
 	Select From List By Value    name=reference_type    inproceedings
 	Input Text    name=cite_key    INPRO1
@@ -101,7 +101,7 @@ Edit Inproceedings Reference Updates Fields
 
 	Page Should Contain    Original Inproceedings Title
 	Click Element    xpath=//a[contains(., "Original Inproceedings Title")]
-	Click Element    xpath=//a[contains(@href, "/edit")]
+	Click Button	Edit reference
 
 	Input Text    name=cite_key    INPRO2
 	Input Text    name=title    Updated Inproceedings Title

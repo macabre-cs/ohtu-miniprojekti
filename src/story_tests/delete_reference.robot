@@ -7,7 +7,7 @@ Test Setup    Reset References
 *** Test Cases ***
 Delete Reference Removes It From List
     Go To    ${HOME_URL}
-    Click Link    Create new reference
+    Click Button    Create a new reference
 
     Select From List By Value    name=reference_type    article
     Input Text    name=cite_key      TEST
@@ -23,8 +23,8 @@ Delete Reference Removes It From List
     Page Should Contain    Sample Title
     Click Element    xpath=//a[contains(., "Sample Title")]
 
-    Click Element    xpath=//a[contains(@href, "/delete")]
+    Click Button   Delete reference
 
-    Click Button    xpath=//input[@name='delete']
+    Click Button    Yes
 
     Page Should Not Contain    Sample Title

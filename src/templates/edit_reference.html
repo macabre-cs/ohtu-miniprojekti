@@ -1,8 +1,8 @@
 {% extends "layout.html" %} {% block title %} Edit reference {% endblock %} {% block body %}
 
-<h2>Edit reference</h2>
+<h2 class="head-form">Edit reference</h2>
 
-<form id="edit-ref-form" action="/reference/{{ reference.id }}/edit" method="post">
+<form class="form" id="edit-ref-form" action="/reference/{{ reference.id }}/edit" method="post">
   {% with messages = get_flashed_messages() %} {% if messages %}
   <ul>
     {% for message in messages %}
@@ -10,27 +10,28 @@
     {% endfor %}
   </ul>
   {% endif %} {% endwith %}
-
-  <label for="reference_type">Reference Type:</label>
+  <div class="form-field">
+  <label for="reference_type"
+    >Reference Type<span class="required">*</span></label
+    >
   <select name="reference_type" id="reference_type" required>
     <option value="book" {% if reference.reference_type == 'book' %}selected{% endif %}>Book</option>
     <option value="article" {% if reference.reference_type == 'article' %}selected{% endif %}>Article</option>
     <option value="inproceedings" {% if reference.reference_type == 'inproceedings' %}selected{% endif %}>Inproceedings</option>
   </select>
-  <br />
-  <br />
+  </div>
 
-  <label for="cite_key">Cite Key:</label>
+  <div class="form-field">
+  <label for="cite_key">Cite Key<span class="required">*</span></label>
   <input type="text" name="cite_key" value="{{ reference.cite_key or '' }}" required />
-  <br />
-  <br />
+  </div>
 
-  <label for="title">Title:</label>
+  <div class="form-field">
+  <label for="title">Title<span class="required">*</span></label>
   <input type="text" name="title" value="{{ reference.title or '' }}" required />
-  <br />
-  <br />
-
-  <label for="author">Author(s) add one per field (Lastname, Firstname):</label>
+  </div>
+<div class="form-field">
+  <label for="author">Author(s) add one per field (Lastname, Firstname)<span class="required">*</span></label>
   <div id="author-fields">
     {% set formatted = reference.author or '' %}
     {% set raw = formatted.split(';') %}
@@ -38,25 +39,25 @@
       {% for a in raw %}
       <div class="author-row">
         {% if loop.first %}
-        <input type="text" name="authors" value="{{ a.strip() }}" required />
+        <input id="author" type="text" name="authors" value="{{ a.strip() }}" required />
         {% else %}
-        <input type="text" name="authors" value="{{ a.strip() }}" />
+        <input id="author" type="text" name="authors" value="{{ a.strip() }}" />
         <button type="button" class="remove-author">×</button>
         {% endif %}
       </div>
       {% endfor %}
     {% else %}
       <div class="author-row">
-        <input type="text" name="authors" required />
+        <input id="author" type="text" name="authors" required />
       </div>
     {% endif %}
   </div>
 
   <button type="button" id="add-author">+ Add Author</button>
-  <br />
-  <br />
+  </div>
 
-  <label for="year">Year:</label>
+  <div class="form-field">
+  <label for="year">Year<span class="required">*</span></label>
   <input
     type="number"
     name="year"
@@ -65,13 +66,12 @@
     value="{{ reference.year or curr_year }}"
     required
   />
-  <br />
-  <br />
+  </div>
 
   <div id="dynamic-fields"></div>
-
-  <button type="submit">Save</button>
-  <button type="submit" name="cancel" formnovalidate>Cancel</button>
+ <button class="btn-cancel" type="submit" name="cancel" formnovalidate>Cancel</button>
+  <button class="btn-create" type="submit">Save</button>
+  <p><span class="required">*</span> Required fields</p>
 </form>
 
 <script>
