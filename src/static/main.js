@@ -11,7 +11,7 @@ document.addEventListener("DOMContentLoaded", () => {
       const row = document.createElement("div");
       row.className = "author-row";
       row.innerHTML = `
-        <input type="text" name="authors" />
+        <input id="author" type="text" name="authors" />
         <button type="button" class="remove-author">×</button>
       `;
       authorContainer.appendChild(row);

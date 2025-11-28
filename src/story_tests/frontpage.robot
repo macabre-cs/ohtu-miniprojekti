@@ -9,19 +9,19 @@ Main Page Should Be Open
     Go To  ${HOME_URL}
     Title Should Be  References app
 
-Main Page Should Contain Create New Reference Link
+Main Page Should Contain Create a New Reference Button
     Go To  ${HOME_URL}
-    Page Should Contain Link  Create new reference
+    Page Should Contain Button  Create a new reference
 
-Clicking Create New Reference Link Opens Create Reference Page
+Clicking Create a New Reference Button Opens Create Reference Page
     Go To  ${HOME_URL}
-    Click Link  Create new reference
+    Click Button  Create a new reference
     Title Should Be  Create a new reference
     Page Should Contain  Create a new reference
 
 Main Page Should Contain Existing References
 	Go To    ${HOME_URL}
-	Click Link    Create new reference
+	Click Button    Create a new reference
 
 	Select From List By Value    name=reference_type    book
 	Input Text    name=cite_key    BOOK1
