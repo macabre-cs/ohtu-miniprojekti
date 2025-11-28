@@ -26,6 +26,8 @@
           {% if reference.journal %}<p><strong>Journal:</strong> {{ reference.journal }}</p>{% endif %}
         {% elif reference.reference_type == "inproceedings" %}
           {% if reference.booktitle %}<p><strong>Booktitle:</strong> {{ reference.booktitle }}</p>{% endif %}
+        {% elif reference.reference_type == "misc" %}
+          {% if reference.url %}<p><strong>Url:</strong> {{ reference.url }}</p>{% endif %}
         {% endif %}
       </div>
     </div>

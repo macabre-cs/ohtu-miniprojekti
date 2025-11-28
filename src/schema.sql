@@ -5,6 +5,7 @@ CREATE TABLE references_table (
   title TEXT NOT NULL,
   author TEXT NOT NULL,
   year INTEGER NOT NULL,
+  url TEXT,
   publisher TEXT,
   chapter TEXT,
   journal TEXT,

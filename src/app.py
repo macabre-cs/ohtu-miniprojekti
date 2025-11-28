@@ -33,7 +33,8 @@ def load_fields(ref_type, ref_id):
     templates = {
         "book": "new_book.html",
         "article": "new_article.html",
-        "inproceedings": "new_inproceedings.html"
+        "inproceedings": "new_inproceedings.html",
+        "misc": "new_misc.html"
     }
     if ref_type not in templates:
         return "Invalid reference type", 400
