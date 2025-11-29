@@ -7,16 +7,21 @@ from repositories.reference_repository import (
     create_reference,
     delete_reference,
     edit_reference,
+    get_reference_by_doi
 )
 from config import app, test_env
 from util import validate_reference, validate_cite_key
 from entities.reference import Reference
 from bibtex_generator import generate_bibtex
+from doi_utils import parse_crossref
 
 
 def format_authors(authors):
     cleaned = [a.strip() for a in authors if a.strip()]
     return "; ".join(cleaned)
+
+
+
 
 
 @app.route("/")
@@ -27,9 +32,54 @@ def index():
 
 @app.route("/new_reference")
 def new():
-    # jos DOI annettu, välitetään se new_reference käsiteltäväksi
+    # server-side prefill: if DOI provided, look up metadata and prefill form vars
     doi = request.args.get("doi")
-    return render_template("new_reference.html", curr_year=datetime.now().year, doi=doi)
+    form_data = {}
+    if doi:
+        try:
+            metadata = get_reference_by_doi(doi)
+        except Exception as e:
+            metadata = None
+            flash(f"DOI lookup failed: {e}")
+
+        if metadata:
+            form_data = parse_crossref(metadata, doi)
+        else:
+            # Inform the user if DOI could not be resolved
+            flash(f"DOI '{doi}' could not be resolved")
+            # ensure keys expected by template exist
+            form_data.setdefault("authors_formatted", form_data.get("authors_formatted", ""))
+            form_data.setdefault("title", form_data.get("title", ""))
+            form_data.setdefault("year", form_data.get("year", ""))
+        # ensure author text is available for partials expecting reference.author
+        if form_data.get("authors_formatted") and not form_data.get("author"):
+            form_data["author"] = form_data.get("authors_formatted")
+
+        # choose reference type and render type-specific partial server-side so no JS is required
+        ref_type = form_data.get("reference_type") or "book"
+        templates = {
+            "book": "new_book.html",
+            "article": "new_article.html",
+            "inproceedings": "new_inproceedings.html",
+        }
+        dynamic_fields = ""
+        if ref_type in templates:
+            # pass a Reference-like mapping to the partial via `reference`
+            try:
+                reference_obj = Reference(form_data)
+                dynamic_fields = render_template(templates[ref_type], reference=reference_obj)
+            except Exception:
+                # rendering partial is best-effort; ignore errors and leave dynamic_fields empty
+                dynamic_fields = ""
+
+        return render_template(
+            "new_reference.html",
+            curr_year=datetime.now().year,
+            doi=doi,
+            dynamic_fields=dynamic_fields,
+            **form_data,
+        )
+    
 
 
 # Placeholder DOI sivu, josta käyttäjä voi syöttää DOI:n.

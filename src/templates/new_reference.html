@@ -25,9 +25,9 @@
       >Reference Type<span class="required">*</span></label
     >
     <select name="reference_type" id="reference_type" required>
-      <option value="book">Book</option>
-      <option value="article">Article</option>
-      <option value="inproceedings">Inproceedings</option>
+        <option value="book" {% if reference_type == 'book' %}selected{% endif %}>Book</option>
+        <option value="article" {% if reference_type == 'article' %}selected{% endif %}>Article</option>
+        <option value="inproceedings" {% if reference_type == 'inproceedings' %}selected{% endif %}>Inproceedings</option>
     </select>
   </div>
 
@@ -47,9 +47,22 @@
       ></label
     >
     <div id="author-fields">
-      <div class="author-row">
-        <input id="author" type="text" name="authors" required />
-      </div>
+      {% set authors_raw = authors_formatted if authors_formatted is defined else (authors|join('; ') if authors is defined else '') %}
+      {% set authors_list = (authors_raw).split(';') if authors_raw is not none else [] %}
+      {% if authors_list and authors_list[0].strip() %}
+        {% for a in authors_list %}
+          <div class="author-row">
+            <input type="text" name="authors" value="{{ a.strip() }}" {% if loop.first %}required{% endif %} />
+            {% if not loop.first %}
+              <button type="button" class="remove-author">×</button>
+            {% endif %}
+          </div>
+        {% endfor %}
+      {% else %}
+        <div class="author-row">
+          <input id="author" type="text" name="authors" required />
+        </div>
+      {% endif %}
     </div>
 
     <button type="button" id="add-author">+ Add Author</button>
@@ -66,7 +79,7 @@
       required
     />
   </div>
-  <div id="dynamic-fields"></div>
+  <div id="dynamic-fields">{{ dynamic_fields|safe if dynamic_fields is defined else '' }}</div>
   <button class="btn-cancel" type="button" onclick="window.location.href='/'">
     Cancel
   </button>
@@ -79,5 +92,44 @@
 </script>
 
 <script src="{{ url_for('static', filename='main.js') }}"></script>
+<script>
+  // Prefill values passed from server (may be empty strings)
+  const PREFILL = {
+    journal: {{ (journal|tojson) if journal is defined else '""' }},
+    volume: {{ (volume|tojson) if volume is defined else '""' }},
+    pages: {{ (pages|tojson) if pages is defined else '""' }},
+    publisher: {{ (publisher|tojson) if publisher is defined else '""' }},
+    chapter: {{ (chapter|tojson) if chapter is defined else '""' }},
+  };
 
+  document.addEventListener('dynamicFieldsLoaded', () => {
+    // populate article-specific optional fields if present
+    try {
+      if (PREFILL.journal) {
+        const el = document.querySelector('input[name="journal"]');
+        if (el) el.value = PREFILL.journal;
+      }
+      if (PREFILL.volume) {
+        const el = document.querySelector('input[name="volume"]');
+        if (el) el.value = PREFILL.volume;
+      }
+      if (PREFILL.pages) {
+        const el = document.querySelector('input[name="pages"]');
+        if (el) el.value = PREFILL.pages;
+      }
+      // book-specific fields
+      if (PREFILL.publisher) {
+        const el = document.querySelector('input[name="publisher"]');
+        if (el) el.value = PREFILL.publisher;
+      }
+      if (PREFILL.chapter) {
+        const el = document.querySelector('input[name="chapter"]');
+        if (el) el.value = PREFILL.chapter;
+      }
+    } catch (err) {
+      // ignore any errors; prefill is best-effort
+      console.warn('Prefill dynamic fields failed', err);
+    }
+  });
+</script>
 {% endblock %}

@@ -1,3 +1,4 @@
+import requests
 from sqlalchemy import text
 from config import db
 
@@ -243,3 +244,15 @@ def get_reference_by_cite_key(cite_key):
         return None
 
     return Reference(row)
+
+
+def get_reference_by_doi(doi):
+    url = f"https://api.crossref.org/works/doi/{doi}"
+    response = requests.get(url, timeout=10)
+
+    if response.status_code == 200:
+        data = response.json()
+        return data
+    else:
+        print(f"Error: {response.status_code} - {response.text}")
+        return None

@@ -38,6 +38,8 @@ document.addEventListener("DOMContentLoaded", () => {
       .then((html) => {
         const target = document.getElementById("dynamic-fields");
         if (target) target.innerHTML = html;
+        // notify that dynamic fields have been loaded so callers can populate values
+        document.dispatchEvent(new CustomEvent('dynamicFieldsLoaded', { detail: { type } }));
       });
   }
 
@@ -46,7 +48,13 @@ document.addEventListener("DOMContentLoaded", () => {
       loadTemplate(refTypeSelect.value, REFERENCE_ID);
     });
 
-    // initial load
-    loadTemplate(refTypeSelect.value, REFERENCE_ID);
+    // initial load: if server has already rendered dynamic fields, skip fetching
+    const target = document.getElementById("dynamic-fields");
+    if (target && target.innerHTML && target.innerHTML.trim()) {
+      // notify listeners that dynamic fields are present
+      document.dispatchEvent(new CustomEvent('dynamicFieldsLoaded', { detail: { type: refTypeSelect.value } }));
+    } else {
+      loadTemplate(refTypeSelect.value, REFERENCE_ID);
+    }
   }
 });
