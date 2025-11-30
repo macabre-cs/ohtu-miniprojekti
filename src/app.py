@@ -79,6 +79,18 @@ def new():
             dynamic_fields=dynamic_fields,
             **form_data,
         )
+    # If no DOI provided, render an empty new-reference form with sensible defaults
+    return render_template(
+        "new_reference.html",
+        curr_year=datetime.now().year,
+        doi=None,
+        dynamic_fields="",
+        title="",
+        authors_formatted="",
+        year="",
+        reference_type="book",
+        author="",
+    )
     
 
 
