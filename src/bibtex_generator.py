@@ -20,14 +20,15 @@ def format_authors(author_string):
 
     return " and ".join(formatted_authors)
 
+
 def format_pages(pages_string):
     # Remove extra spaces and split pages by comma
     pages_list = [p.strip() for p in pages_string.split(",") if p.strip()]
     # Replace single hyphens with double hyphens for page ranges
+    pages_list = [p.replace("--", "-") for p in pages_list]
     pages_list = [p.replace("-", "--") for p in pages_list]
     # Join the pages back into a single string
     return ",".join(pages_list)
-
 
 
 def format_into_bibtex(reference):
