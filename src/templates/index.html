@@ -3,29 +3,47 @@ block body %}
 <h2>References app</h2>
 
 <div>
-  <button class="btn-create" onclick="window.location.href='/new_reference'">
-    Create a new reference
-  </button>
-</div>
-<br />
+  <p>
+    <button class="btn-create" onclick="window.location.href='/new_reference'">
+      Create a new reference
+    </button>
 
-<form action="/export_bibtex" method="POST">
-  <button type="submit">Export BibTeX</button>
-<div class="references-list">
-  {% for reference in references %}
-  <div class="reference-card">
-    <div class="reference-header">
-      <input type="checkbox" name="reference_ids" value="{{ reference.id }}" id="checkbox-{{ loop.index }}">
-      <a class="reference-title" href="/reference/{{ reference.id }}"
-        >{{ reference.title }}</a
-      >
-    </div>
+    <button
+      class="btn-create"
+      type="button"
+      onclick="document.getElementById('export-form').submit()"
+    >
+      Export BibTeX
+    </button>
+  </p>
+  {% with messages = get_flashed_messages() %} {% if messages %}
+  <ul>
+    {% for message in messages %}
+    <li>{{ message }}</li>
+    {% endfor %}
+  </ul>
+  {% endif %} {% endwith %}
+  <form id="export-form" action="/export_bibtex" method="POST">
+    <div class="references-list">
+      {% for reference in references %}
+      <div class="reference-card">
+        <div class="reference-header">
+          <input
+            type="checkbox"
+            name="reference_ids"
+            value="{{ reference.id }}"
+            id="checkbox-{{ loop.index }}"
+          />
+          <a class="reference-title" href="/reference/{{ reference.id }}"
+            >{{ reference.title }}</a
+          >
+        </div>
 
-    <div class="reference-meta">
-      <p><strong>Author(s):</strong> {{ reference.author }}</p>
-      <p><strong>Year:</strong> {{ reference.year }}</p>
-      <p><strong>Type:</strong> {{ reference.reference_type }}</p>
-      <p><strong>Cite key:</strong> {{ reference.cite_key }}</p>
+        <div class="reference-meta">
+          <p><strong>Author(s):</strong> {{ reference.author }}</p>
+          <p><strong>Year:</strong> {{ reference.year }}</p>
+          <p><strong>Type:</strong> {{ reference.reference_type }}</p>
+          <p><strong>Cite key:</strong> {{ reference.cite_key }}</p>
 
       {% if reference.reference_type == "book" %} {% if reference.publisher %}
       <p><strong>Publisher:</strong> {{ reference.publisher }}</p>
@@ -45,11 +63,12 @@ block body %}
       reference.url %}
       <p><strong>Url:</strong> {{ reference.url }}</p>
       {% endif %} {% endif %}
+        </div>
+      </div>
+      {% else %}
+      <p>No references yet</p>
+      {% endfor %}
     </div>
-  </div>
-  {% else %}
-  <p>No references yet</p>
-  {% endfor %}
+  </form>
 </div>
-</form>
 {% endblock %}

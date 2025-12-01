@@ -44,7 +44,7 @@ class TestBibtexGenerator(unittest.TestCase):
         self.assertEqual(entry['year'], '1984')
         self.assertEqual(entry['journal'], 'The Computer Journal')
         self.assertEqual(entry['volume'], '27')
-        self.assertEqual(entry['pages'], '97-111')
+        self.assertEqual(entry['pages'], '97--111')
 
 
 if __name__ == '__main__':
