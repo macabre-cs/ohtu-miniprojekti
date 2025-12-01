@@ -3,6 +3,16 @@
 <h2 class="head-form">Add reference by DOI</h2>
 
 <form class="form" action="/new_reference_doi" method="post">
+  {% with messages = get_flashed_messages() %}
+  {% if messages %}
+  <ul>
+    {% for message in messages %}
+    <li>{{ message }}</li>
+    {% endfor %}
+  </ul>
+  {% endif %}
+  {% endwith %}
+
   <p>DOI:n lisäämällä käyttäjä uudelleenohjataan new_reference-sivulle, jossa DOI:ta voidaan käyttää formin prefillaamiseen.</p>
 
   <div class="form-field">

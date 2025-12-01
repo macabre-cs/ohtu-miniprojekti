@@ -1,0 +1,16 @@
+{
+  "status": "ok",
+  "message-type": "work",
+  "message-version": "1.0.0",
+  "message": {
+    "DOI": "10.9999/bookdoi",
+    "title": ["Test Book Title"],
+    "author": [
+      {"given": "Alice", "family": "Writer"}
+    ],
+    "published-print": {"date-parts": [[2018, 6, 1]]},
+    "publisher": "Example Publisher",
+    "type": "book",
+    "chapter": "7"
+  }
+}

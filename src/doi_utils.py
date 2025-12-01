@@ -62,6 +62,9 @@ def parse_crossref(metadata, doi=None):
     out["volume"] = m.get("volume") or ""
     out["pages"] = m.get("page") or m.get("article-number") or ""
 
+    # chapter (if present for book entries)
+    out["chapter"] = m.get("chapter") or ""
+
     out["booktitle"] = ""
     typ = (m.get("type") or "").lower()
     # heuristics for reference_type
