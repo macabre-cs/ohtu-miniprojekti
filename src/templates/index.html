@@ -16,6 +16,13 @@ block body %}
       Export BibTeX
     </button>
   </p>
+  {% with messages = get_flashed_messages() %} {% if messages %}
+  <ul>
+    {% for message in messages %}
+    <li>{{ message }}</li>
+    {% endfor %}
+  </ul>
+  {% endif %} {% endwith %}
   <form id="export-form" action="/export_bibtex" method="POST">
     <div class="references-list">
       {% for reference in references %}

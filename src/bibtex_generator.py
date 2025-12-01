@@ -20,6 +20,15 @@ def format_authors(author_string):
 
     return " and ".join(formatted_authors)
 
+def format_pages(pages_string):
+    # Remove extra spaces and split pages by comma
+    pages_list = [p.strip() for p in pages_string.split(",") if p.strip()]
+    # Replace single hyphens with double hyphens for page ranges
+    pages_list = [p.replace("-", "--") for p in pages_list]
+    # Join the pages back into a single string
+    return ",".join(pages_list)
+
+
 
 def format_into_bibtex(reference):
     ref_type = reference.reference_type
@@ -28,6 +37,8 @@ def format_into_bibtex(reference):
     lines = [f"@{ref_type}{{{cite_key},"]
 
     reference.author = format_authors(reference.author)
+    if reference.reference_type == "article" and reference.pages:
+        reference.pages = format_pages(reference.pages)
 
     for key, value in reference:
         if key not in ["reference_type", "cite_key", "id"] and value:
