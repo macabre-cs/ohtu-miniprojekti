@@ -59,7 +59,7 @@ Create Inproceedings Reference Successfully
 	Input Text    name=authors    Smith, Alice
 	Input Text    name=year      2010
     Input Text    name=booktitle   Conference Name
-    
+
 	Click Button    Create
 
     Page Should Contain    INPROCEEDINGS1
@@ -67,3 +67,22 @@ Create Inproceedings Reference Successfully
     Page Should Contain    Smith, Alice
     Page Should Contain    2010
     Page Should Contain    Conference Name
+
+Create Misc Reference Successfully
+	Go To    ${HOME_URL}
+	Click Button    Create a new reference
+
+	Select From List By Value    name=reference_type    misc
+	Input Text    name=cite_key    MISC1
+	Input Text    name=title       Misc Title
+	Input Text    name=authors    Smith, Alice
+	Input Text    name=year      2010
+    Input Text    name=url       https://example.com
+
+	Click Button    Create
+
+    Page Should Contain    MISC1
+	Page Should Contain    Misc Title
+    Page Should Contain    Smith, Alice
+    Page Should Contain    2010
+    Page Should Contain    https://example.com
