@@ -22,6 +22,79 @@ def format_authors(authors):
 
 
 
+def _generate_dynamic_fields(form_data):
+    """Return server-rendered type-specific partial (best-effort)."""
+    ref_type = form_data.get("reference_type") or "book"
+    templates = {
+        "book": "new_book.html",
+        "article": "new_article.html",
+        "inproceedings": "new_inproceedings.html",
+    }
+    template = templates.get(ref_type)
+    if not template:
+        return ""
+    try:
+        reference_obj = Reference(form_data)
+        return render_template(template, reference=reference_obj)
+    except Exception:
+        # best-effort: if rendering fails, don't break the page
+        return ""
+
+
+def _render_new_reference(form_data=None, doi=None):
+    """Centralised rendering for the new-reference page.
+
+    Ensures the template always receives the expected keys so templates
+    and partials can rely on them.
+    """
+    form_data = form_data or {}
+    defaults = {
+        "title": "",
+        "authors_formatted": "",
+        "year": "",
+        "reference_type": "book",
+        "author": "",
+    }
+    # Merge defaults without overwriting provided values
+    merged = {**defaults, **form_data}
+    dynamic_fields = _generate_dynamic_fields(merged)
+    return render_template(
+        "new_reference.html",
+        curr_year=datetime.now().year,
+        doi=doi,
+        dynamic_fields=dynamic_fields,
+        **merged,
+    )
+
+
+def _fetch_and_parse_doi(doi):
+    """Fetch reference metadata for DOI in test or prod mode and parse it.
+
+    Returns (form_data_dict or None, error_message_or_None).
+    """
+    if not doi:
+        return None, None
+    try:
+        metadata = get_reference_by_doi(doi)
+    except Exception as e:
+        return None, f"DOI lookup failed: {e}"
+
+    if not metadata:
+        return None, f"DOI '{doi}' could not be resolved"
+
+    try:
+        form_data = parse_crossref(metadata, doi)
+    except Exception as e:
+        return None, f"Failed to parse DOI metadata: {e}"
+
+    # ensure author text is available for partials expecting reference.author
+    if form_data.get("authors_formatted") and not form_data.get("author"):
+        form_data["author"] = form_data.get("authors_formatted")
+
+    return form_data, None
+
+
+
 
 
 @app.route("/")
@@ -32,65 +105,18 @@ def index():
 
 @app.route("/new_reference")
 def new():
-    # server-side prefill: if DOI provided, look up metadata and prefill form vars
     doi = request.args.get("doi")
-    form_data = {}
+
     if doi:
-        try:
-            metadata = get_reference_by_doi(doi)
-        except Exception as e:
-            metadata = None
-            flash(f"DOI lookup failed: {e}")
+        form_data, error = _fetch_and_parse_doi(doi)
+        if error:
+            flash(error)
+            # fall back to empty form but still show the DOI in the UI
+            return _render_new_reference({}, doi=doi)
+        return _render_new_reference(form_data, doi=doi)
 
-        if metadata:
-            form_data = parse_crossref(metadata, doi)
-        else:
-            # Inform the user if DOI could not be resolved
-            flash(f"DOI '{doi}' could not be resolved")
-            # ensure keys expected by template exist
-            form_data.setdefault("authors_formatted", form_data.get("authors_formatted", ""))
-            form_data.setdefault("title", form_data.get("title", ""))
-            form_data.setdefault("year", form_data.get("year", ""))
-        # ensure author text is available for partials expecting reference.author
-        if form_data.get("authors_formatted") and not form_data.get("author"):
-            form_data["author"] = form_data.get("authors_formatted")
-
-        # choose reference type and render type-specific partial server-side so no JS is required
-        ref_type = form_data.get("reference_type") or "book"
-        templates = {
-            "book": "new_book.html",
-            "article": "new_article.html",
-            "inproceedings": "new_inproceedings.html",
-        }
-        dynamic_fields = ""
-        if ref_type in templates:
-            # pass a Reference-like mapping to the partial via `reference`
-            try:
-                reference_obj = Reference(form_data)
-                dynamic_fields = render_template(templates[ref_type], reference=reference_obj)
-            except Exception:
-                # rendering partial is best-effort; ignore errors and leave dynamic_fields empty
-                dynamic_fields = ""
-
-        return render_template(
-            "new_reference.html",
-            curr_year=datetime.now().year,
-            doi=doi,
-            dynamic_fields=dynamic_fields,
-            **form_data,
-        )
-    # If no DOI provided, render an empty new-reference form with sensible defaults
-    return render_template(
-        "new_reference.html",
-        curr_year=datetime.now().year,
-        doi=None,
-        dynamic_fields="",
-        title="",
-        authors_formatted="",
-        year="",
-        reference_type="book",
-        author="",
-    )
+    # No DOI: render empty form
+    return _render_new_reference({}, doi=None)
     
 
 

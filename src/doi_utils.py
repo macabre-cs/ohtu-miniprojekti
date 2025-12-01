@@ -1,30 +1,29 @@
 """Helpers for parsing Crossref DOI lookup JSON into form fields.
 
-This module contains a single function `parse_crossref(metadata, doi=None)` that
-maps Crossref `/works` responses to the form variables expected by
-`new_reference.html` and the `new_*` partial templates.
+This module provides `parse_crossref(metadata, doi=None)` which maps Crossref
+`/works` responses to the form variables used by the templates. The
+implementation is kept small and broken into private helper functions to make
+unit testing and maintenance easier.
 """
 
-def parse_crossref(metadata, doi=None):
-    """Map Crossref /works JSON to form fields used by templates.
+from typing import Dict, Any, List, Tuple
 
-    Returns a dict with keys matching template variables: title, authors (list),
-    authors_formatted, year, publisher, journal, volume, pages, booktitle,
-    reference_type, cite_key
-    """
-    if not metadata:
+
+def _get_message(metadata: Any) -> Dict[str, Any]:
+    """Return the Crossref message payload from the API response."""
+    if not metadata or not isinstance(metadata, dict):
         return {}
+    return metadata.get("message", {}) or {}
 
-    m = metadata.get("message", {}) if isinstance(metadata, dict) else {}
-    out = {}
 
-    # title
-    titles = m.get("title") or []
-    out["title"] = titles[0] if titles else ""
+def _extract_title(msg: Dict[str, Any]) -> str:
+    titles = msg.get("title") or []
+    return titles[0] if titles else ""
 
-    # authors
+
+def _format_authors(msg: Dict[str, Any]) -> Tuple[List[str], str]:
     authors = []
-    for a in m.get("author", []):
+    for a in msg.get("author", []):
         given = (a.get("given") or "").strip()
         family = (a.get("family") or "").strip()
         if family and given:
@@ -33,27 +32,65 @@ def parse_crossref(metadata, doi=None):
             authors.append(family)
         elif given:
             authors.append(given)
+    formatted = "; ".join(authors) if authors else ""
+    return authors, formatted
+
+
+def _extract_year(msg: Dict[str, Any]) -> str:
+    for key in ("published-print", "published-online", "issued"):
+        dp = msg.get(key)
+        if dp and isinstance(dp.get("date-parts"), list) and dp["date-parts"]:
+            try:
+                return str(int(dp["date-parts"][0][0]))
+            except Exception:
+                pass
+    # fallback to `created`
+    try:
+        created = msg.get("created", {}).get("date-parts", [[None]])
+        return str(int(created[0][0]))
+    except Exception:
+        return ""
+
+
+def _determine_reference_type_and_booktitle(msg: Dict[str, Any], journal: str) -> Tuple[str, str]:
+    typ = (msg.get("type") or "").lower()
+    if "book" in typ:
+        return "book", ""
+    if "proceedings" in typ or (journal and "proceedings" in journal.lower()):
+        return "inproceedings", journal
+    return ("article", "") if journal else ("book", "")
+
+
+def _suggest_cite_key(authors: List[str], year: str, doi: str | None) -> str:
+    cite = ""
+    if authors:
+        first_family = authors[0].split(",", 1)[0]
+        cite = f"{first_family}{year or ''}".replace(" ", "")
+    if not cite and doi:
+        cite = doi.replace("/", "_")
+    return cite
+
+
+def parse_crossref(metadata: Any, doi: str | None = None) -> Dict[str, Any]:
+    """Map Crossref /works JSON to form fields used by templates.
+
+    Returns a dict with keys matching template variables: title, authors (list),
+    authors_formatted, year, publisher, journal, volume, pages, booktitle,
+    chapter, reference_type, cite_key
+    """
+    if not metadata:
+        return {}
+
+    m = _get_message(metadata)
+    out: Dict[str, Any] = {}
+
+    out["title"] = _extract_title(m)
+
+    authors, formatted = _format_authors(m)
     out["authors"] = authors
-    out["authors_formatted"] = "; ".join(authors) if authors else ""
+    out["authors_formatted"] = formatted
 
-    # year: check published-print, published-online, issued
-    def extract_year(msg):
-        for key in ("published-print", "published-online", "issued"):
-            dp = msg.get(key)
-            if dp and isinstance(dp.get("date-parts"), list) and dp["date-parts"]:
-                try:
-                    return int(dp["date-parts"][0][0])
-                except Exception:
-                    pass
-        # fallback
-        try:
-            return int(msg.get("created", {}).get("date-parts", [[None]])[0][0])
-        except Exception:
-            return None
-
-    year = extract_year(m)
-    out["year"] = str(year) if year else ""
-
+    out["year"] = _extract_year(m)
     out["publisher"] = m.get("publisher") or ""
 
     container = m.get("container-title") or []
@@ -62,28 +99,12 @@ def parse_crossref(metadata, doi=None):
     out["volume"] = m.get("volume") or ""
     out["pages"] = m.get("page") or m.get("article-number") or ""
 
-    # chapter (if present for book entries)
     out["chapter"] = m.get("chapter") or ""
 
-    out["booktitle"] = ""
-    typ = (m.get("type") or "").lower()
-    # heuristics for reference_type
-    if "book" in typ:
-        out["reference_type"] = "book"
-    elif "proceedings" in typ or "proceedings" in (out["journal"].lower() if out["journal"]
-                                                                          else ""):
-        out["reference_type"] = "inproceedings"
-        out["booktitle"] = out["journal"]
-    else:
-        # prefer article when we have a container title
-        out["reference_type"] = "article" if out["journal"] else "book"
+    ref_type, booktitle = _determine_reference_type_and_booktitle(m, out["journal"])  # type: ignore[arg-type]
+    out["reference_type"] = ref_type
+    out["booktitle"] = booktitle
 
-    # simple cite_key suggestion: first author's family + year, or DOI sanitized
-    cite = ""
-    if authors:
-        first_family = authors[0].split(",", 1)[0]
-        cite = f"{first_family}{year or ''}".replace(" ", "")
-    if not cite and doi:
-        cite = doi.replace("/", "_")
-    out["cite_key"] = cite
+    out["cite_key"] = _suggest_cite_key(authors, out["year"], doi)
+
     return out
