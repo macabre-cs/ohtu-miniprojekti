@@ -119,3 +119,37 @@ Edit Inproceedings Reference Updates Fields
 	Page Should Contain    White, David
 	Page Should Contain    Black, Emma
 	Page Should Contain    Updated Booktitle
+
+Edit Misc Reference Updates Fields
+	Go To    ${HOME_URL}
+	Click Button    Create a new reference
+
+	Select From List By Value    name=reference_type    misc
+	Input Text    name=cite_key    MISC1
+	Input Text    name=title       Original Misc Title
+	Input Text    name=authors    White, David
+	Input Text    name=year      2018
+	Input Text    name=url   https://example.com
+
+	Click Button    Create
+
+	Page Should Contain    Original Misc Title
+	Click Element    xpath=//a[contains(., "Original Misc Title")]
+	Click Button	Edit reference
+
+	Input Text    name=cite_key    MISC2
+	Input Text    name=title    Updated Misc Title
+
+	Click Button    id=add-author
+	Input Text    xpath=(//input[@name='authors'])[2]    Black, Emma
+	Input Text    name=year    2023
+	Input Text    name=url    https://updated.example.com
+
+	Click Button    Save
+
+	Page Should Contain    MISC2
+	Page Should Contain    Updated Misc Title
+	Page Should Contain    2023
+	Page Should Contain    White, David
+	Page Should Contain    Black, Emma
+	Page Should Contain    https://updated.example.com

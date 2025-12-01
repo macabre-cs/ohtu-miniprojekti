@@ -17,6 +17,8 @@ class Reference:
             self.pages = reference_dict.get('pages')
         elif self.reference_type == 'inproceedings':
             self.booktitle = reference_dict.get('booktitle')
+        elif self.reference_type == 'misc':
+            self.url = reference_dict.get('url')
 
     def __str__(self):
         cite = self.cite_key or ""
@@ -45,5 +47,7 @@ class Reference:
             result['pages'] = self.pages
         elif self.reference_type == 'inproceedings':
             result['booktitle'] = self.booktitle
+        elif self.reference_type == 'misc':
+            result['url'] = self.url
 
         return iter(result.items())

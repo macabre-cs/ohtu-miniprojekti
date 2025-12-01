@@ -13,6 +13,7 @@ def get_references():
                       title,
                       author,
                       year,
+                      url,
                       publisher,
                       chapter,
                       journal,
@@ -34,7 +35,8 @@ def create_reference(reference):
         create_article_ref(reference)
     elif reference.reference_type == 'inproceedings':
         create_inproceedings_ref(reference)
-
+    elif reference.reference_type == 'misc':
+        create_misc_ref(reference)
 
 def create_book_ref(reference):
     sql = text(
@@ -112,6 +114,25 @@ def create_inproceedings_ref(reference):
     db.session.commit()
 
 
+def create_misc_ref(reference):
+    sql = text(
+        """INSERT INTO references_table
+           (reference_type, cite_key, title, author, year, url)
+           VALUES (:reference_type,
+                   :cite_key,
+                   :title,
+                   :author,
+                   :year,
+                   :url)"""
+    )
+    db.session.execute(sql, {"reference_type": reference.reference_type,
+                             "cite_key": reference.cite_key,
+                             "title": reference.title,
+                             "author": reference.author,
+                             "year": reference.year,
+                             "url": reference.url})
+    db.session.commit()
+
 def delete_reference(ref_id):
     sql = text("""DELETE FROM references_table WHERE id = :id""")
     db.session.execute(sql, {"id": ref_id})
@@ -125,6 +146,9 @@ def edit_reference(ref_id, reference):
         edit_article_ref(ref_id, reference)
     elif reference.reference_type == 'inproceedings':
         edit_inproceedings_ref(ref_id, reference)
+    elif reference.reference_type == 'misc':
+        edit_misc_ref(ref_id, reference)
+
 
 def edit_book_ref(ref_id, reference):
     sql = text(
@@ -207,6 +231,31 @@ def edit_inproceedings_ref(ref_id, reference):
     )
     db.session.commit()
 
+def edit_misc_ref(ref_id, reference):
+    sql = text(
+        """UPDATE references_table
+           SET reference_type = :reference_type,
+               cite_key = :cite_key,
+               title = :title,
+               author = :author,
+               year = :year,
+               url = :url
+           WHERE id = :id"""
+    )
+    db.session.execute(
+        sql,
+        {
+            "id": ref_id,
+            "reference_type": reference.reference_type,
+            "cite_key": reference.cite_key,
+            "title": reference.title,
+            "author": reference.author,
+            "year": reference.year,
+            "url": reference.url,
+        },
+    )
+    db.session.commit()
+
 
 def get_reference(ref_id):
     sql = text(
@@ -215,7 +264,8 @@ def get_reference(ref_id):
                   cite_key, 
                   title,
                   author, 
-                  year, 
+                  year,
+                  url,
                   publisher, 
                   chapter, 
                   journal, 

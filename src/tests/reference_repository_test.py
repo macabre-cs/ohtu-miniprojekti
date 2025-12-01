@@ -139,6 +139,38 @@ def test_create_inproceedings_reference(mock_db):
     # check that the function commits
     mock_db.session.commit.assert_called_once()
 
+@patch("repositories.reference_repository.db")
+def test_misc_reference(mock_db):
+    reference_dict_test = {
+        "reference_type": "misc",
+        "cite_key": "key6",
+        "title": "Scrum (project management)",
+        "author": "Wikipedia",
+        "year": 2025,
+        "url": "https://en.wikipedia.org/wiki/Scrum_(project_management)"
+    }
+
+    reference = Reference(reference_dict_test)
+
+    create_reference(reference)
+
+    # check that execute gets called
+    mock_db.session.execute.assert_called_once()
+
+    # check that the function uses correct parameters
+    called_args, called_kwargs = mock_db.session.execute.call_args
+    sql = str(called_args[0])
+    params = called_args[1] if len(called_args) > 1 else called_kwargs
+    assert "INSERT INTO references_table" in sql
+    assert params["reference_type"] == "misc"
+    assert params["cite_key"] == "key6"
+    assert params["title"] == "Scrum (project management)"
+    assert params["author"] == "Wikipedia"
+    assert params["year"] == 2025
+    assert params["url"] == "https://en.wikipedia.org/wiki/Scrum_(project_management)"
+
+    # check that the function commits
+    mock_db.session.commit.assert_called_once()
 
 @patch("repositories.reference_repository.db")
 def test_get_reference_found(mock_db):

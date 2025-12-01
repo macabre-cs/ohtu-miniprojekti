@@ -25,6 +25,7 @@ def validate_reference(reference_dict):
     except (ValueError, TypeError) as exc:
         raise ValueError("Year must be a valid number") from exc
 
+
 def validate_cite_key(cite_key, exclude_id=None):
     reference = get_reference_by_cite_key(cite_key)
     if reference and (exclude_id is None or str(reference.id) != str(exclude_id)):
