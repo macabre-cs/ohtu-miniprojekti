@@ -311,22 +311,22 @@ def search_references_by_query(query):
                 pages,
                 booktitle
             FROM references_table WHERE
-                cite_key ILIKE :like OR
-                title ILIKE :like OR
-                author ILIKE :like OR
-                CAST(year AS TEXT) ILIKE :like OR
-                url ILIKE :like OR
-                publisher ILIKE :like OR
-                chapter ILIKE :like OR
-                journal ILIKE :like OR
-                CAST(volume AS TEXT) ILIKE :like OR
-                CAST(pages AS TEXT) ILIKE :like OR
-                booktitle ILIKE :like
+                cite_key ILIKE :query OR
+                title ILIKE :query OR
+                author ILIKE :query OR
+                CAST(year AS TEXT) ILIKE :query OR
+                url ILIKE :query OR
+                publisher ILIKE :query OR
+                chapter ILIKE :query OR
+                journal ILIKE :query OR
+                CAST(volume AS TEXT) ILIKE :query OR
+                CAST(pages AS TEXT) ILIKE :query OR
+                booktitle ILIKE :query
         """
     )
 
     like = "%" + query + "%"
-    result = db.session.execute(sql, {"like": like})
+    result = db.session.execute(sql, {"query": like})
     rows = result.mappings().all()
 
     if not rows:
