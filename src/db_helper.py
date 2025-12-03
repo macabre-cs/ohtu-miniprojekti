@@ -16,7 +16,7 @@ def setup_db():
     """
     print("Dropping existing tables (if any)")
     db.drop_all()
-    
+
     print("Creating database tables")
     db.create_all()
     db.session.commit()
@@ -25,4 +25,3 @@ def setup_db():
 if __name__ == "__main__":
     with app.app_context():
         setup_db()
-

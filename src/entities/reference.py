@@ -5,7 +5,7 @@ from config import db
 
 class Reference(db.Model):
     __tablename__ = 'references_table'
-    
+
     id = db.Column(db.Integer, primary_key=True)
     reference_type = db.Column(db.String, nullable=False)
     cite_key = db.Column(db.String, nullable=False, unique=True)
@@ -41,7 +41,7 @@ class Reference(db.Model):
             self.volume = reference_dict.get('volume')
             self.pages = reference_dict.get('pages')
             self.booktitle = reference_dict.get('booktitle')
-            
+
             # Handle id separately (for existing records)
             if 'id' in reference_dict:
                 self.id = reference_dict.get('id')

@@ -30,7 +30,7 @@ def edit_reference(ref_id, reference):
         existing_ref.title = reference.title
         existing_ref.author = reference.author
         existing_ref.year = reference.year
-        
+
         # Update type-specific fields
         existing_ref.url = reference.url if hasattr(reference, 'url') else None
         existing_ref.publisher = reference.publisher if hasattr(reference, 'publisher') else None
@@ -39,7 +39,7 @@ def edit_reference(ref_id, reference):
         existing_ref.volume = reference.volume if hasattr(reference, 'volume') else None
         existing_ref.pages = reference.pages if hasattr(reference, 'pages') else None
         existing_ref.booktitle = reference.booktitle if hasattr(reference, 'booktitle') else None
-        
+
         db.session.commit()
 
 
@@ -51,4 +51,3 @@ def get_reference(ref_id):
 def get_reference_by_cite_key(cite_key):
     """Get a reference by its citation key."""
     return Reference.query.filter_by(cite_key=cite_key).first()
-

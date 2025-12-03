@@ -14,11 +14,11 @@ def test_get_references(mock_reference_class):
     mock_ref1 = MagicMock()
     mock_ref1.cite_key = "key1"
     mock_ref1.title = "Title 1"
-    
+
     mock_ref2 = MagicMock()
     mock_ref2.cite_key = "key2"
     mock_ref2.title = "Title 2"
-    
+
     mock_reference_class.query.all.return_value = [mock_ref1, mock_ref2]
 
     references = get_references()
@@ -129,7 +129,7 @@ def test_get_reference_found(mock_reference_class):
     mock_ref.title = "Title 1"
     mock_ref.author = "Author 1"
     mock_ref.year = 2020
-    
+
     mock_reference_class.query.get.return_value = mock_ref
 
     ref = get_reference(1)
@@ -154,7 +154,7 @@ def test_delete_reference(mock_reference_class, mock_db):
     # Create a mock reference to be deleted
     mock_ref = MagicMock()
     mock_reference_class.query.get.return_value = mock_ref
-    
+
     delete_reference(5)
 
     # Ensure query.get was called with correct id
@@ -172,7 +172,7 @@ def test_edit_reference(mock_reference_class, mock_db):
     mock_existing_ref = MagicMock()
     mock_existing_ref.id = 3
     mock_reference_class.query.get.return_value = mock_existing_ref
-    
+
     reference_dict_test = {
         "reference_type": "book",
         "cite_key": "edited_key",
@@ -189,7 +189,7 @@ def test_edit_reference(mock_reference_class, mock_db):
 
     # Ensure query.get was called
     mock_reference_class.query.get.assert_called_once_with(3)
-    
+
     # Check that the existing reference was updated
     assert mock_existing_ref.cite_key == "edited_key"
     assert mock_existing_ref.title == "Edited Title"
@@ -199,4 +199,3 @@ def test_edit_reference(mock_reference_class, mock_db):
 
     # ensure commit was called
     mock_db.session.commit.assert_called_once()
-
