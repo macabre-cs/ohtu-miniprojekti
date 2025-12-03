@@ -67,3 +67,45 @@ Sprintin 2 retrospektiivi pidettiin [Glad, Sad, Mad](https://retrospectivewiki.o
   * Muistetaan päivittää
 * Bugi asiakkaan demossa
   * Selvitetään ja lisätään testi bugia varten
+
+
+### Sprintti 3
+
+Oli jälleen aika pitää retrospektiivi sprintin jälkeen. Pidimme retron pikaisen ruokatauon jälkeen uuden tekniikan parissa. Tällä kertaa kokeilimme variaatiota [viime viikon tekniikasta](https://retrospectivewiki.org/index.php?title=Glad,_Sad,_Mad), käytimme [Facebook Reactions Retrospective](https://retrospectivewiki.org/index.php?title=Facebook_Reactions_Retrospective)-tekniiikkaa. Retron fasilitoija teki valkotaululle kuusi eri lokeroa, jotka nimettiin Liked, Loved, Made me laugh, Surprised me, Made me sad ja Made me angry. Kaikki ryhmäläiset saivat 7 minuuttia aikaa kirjoittaa havaintoja sprintistä post-it-lapuille, jotka lopuksi laitettiin valkotaululle. Laput käytiin läpi järjestyksessä fasilitoijan johdolla.
+
+**Liked** ja **Loved**
+
+Nämä kaksi kategoriaa tuntuivat olevan liian päällekäisiä, joten niiden yhdistäminen on aiheellista.
+* Tiimin kommunikaatio ja henki on hyvää!
+* Uudesta muutokset-discord-kanavasta pidettiin kovasti
+* Koodi on selkeämpää refaktoroinnin ansiosta
+* Projekti etenee ja työnteko on tehokkaampaa
+* Vähemmän vaikeuksia mergejen kanssa
+* Yksi story jäi kesken, se toimi hyvänä oppimiskokemuksena
+* Asiakastapaaminen meni jälleen hyvin
+
+**Made me laugh**
+* Asiakastapaamista edeltävä palaveri meni taas yliajalle :D
+
+**Surprised me**
+* DOI-tunnisteella viitteen lisäämisen toteuttamisen työläys
+* Koodin lukemiseen ja ylläpitoon meni paljon aikaa
+
+**Made me sad**
+* Olimme liian optimisia ajan suhteen (esim. taskit veivät enemmän aikaa kuin oletimme)
+* Aiempaa haastavat storyt (-> olisiko tarvetta suunnitella tai työskennellä yhdessä enemmän?)
+* Oma suoriutuminen ei ollut mitä odotin
+
+**Made me angry**
+* Copilot
+* Robot Framefork
+* Mainin pitäminen ajan tasalla
+* Koodaus ei onnistunut kuten olisin toivonut (henkilökohtainen suoriutuminen)
+
+**Kehitystoimenpiteet**
+
+Kun kaikki laput olivat käyty läpi, ryhmälle oli jo rutiininomaisesti syntynyt idea siitä miten voisimme parantaa toimintatapoja seuraavalle sprintille. Valitsimme viimeiselle sprintille storyt, jotka hyvin varmasti saamme toteutettua ongelmitta ajallisesti ja teknisesti. Koimme, että uuden oppimiseen on mennyt joka sprintissä aina enemmän ja enemmän aikaa, joten halusimme nyt keskittyä tuotteen edistämiseen. Sprintissä meni myös paljon aikaa koodin refaktorointiin, joka on eduksemme seuraavassa sprintissä, sillä koodi on luettavampaa. Aiomme tietoisesti ottaa seuraavassa sprintissä teknistä velkaa, jotta saamme tuotteesta mahdollisimman eeppisen loppudemoon. Sovimme myös, että varaamme enemmän aikaa yhteisiin palavereihin, sillä ne ovat venyneet.
+
+**Muita huomioita**
+
+Uuden retrospektiivi-tekniikan kokeilu oli mielekästä, mutta osa kategorioista tuntui vähän turhilta tai päällekäisiltä. Surprised me-kategoria, oli kuitenkin hyvä lisäys ryhmän mielestä. Totesimme, että meille olisi riittänyt kategoriat Glad, Sad, Mad ja Surprised.
