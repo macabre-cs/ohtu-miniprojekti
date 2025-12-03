@@ -79,3 +79,47 @@ def test_create_reference_missing_title(mock_create):
     )
     assert b"Title is required" in response.data
     mock_create.assert_not_called()
+
+
+@patch("app.search_references_by_query")
+def test_search_references_found(mock_search):
+    mock_search.return_value = [
+        {
+            "id": 1,
+            "reference_type": "book",
+            "cite_key": "key2",
+            "title": "New book",
+            "author": "Author A",
+            "year": 2021,
+            "publisher": "Publisher B",
+        }
+    ]
+
+    client = app.test_client()
+    response = client.get("/search_references?query=new")
+
+    assert response.status_code == 200
+    assert b"New book" in response.data
+    mock_search.assert_called_once_with("new")
+
+
+@patch("app.search_references_by_query")
+def test_search_references_no_query(mock_search):
+    client = app.test_client()
+    response = client.get("/search_references")
+
+    assert response.status_code == 200
+    assert b"Search results" not in response.data
+    mock_search.assert_not_called()
+
+
+@patch("app.search_references_by_query")
+def test_search_references_not_found(mock_search):
+    mock_search.return_value = []
+
+    client = app.test_client()
+    response = client.get("/search_references?query=NonExistent")
+
+    assert response.status_code == 200
+    assert b"Search results: 0" in response.data
+    mock_search.assert_called_once_with("NonExistent")
