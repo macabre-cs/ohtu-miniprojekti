@@ -49,4 +49,35 @@ document.addEventListener("DOMContentLoaded", () => {
     // initial load
     loadTemplate(refTypeSelect.value, REFERENCE_ID);
   }
+
+  // ------------------------------
+  // Select All Checkbox
+  // ------------------------------
+
+  const selectAllCheckbox = document.getElementById("select-all");
+
+  function getReferenceCheckboxes() {
+    return Array.from(document.querySelectorAll('input[name="reference_ids"]'));
+  }
+
+  if (selectAllCheckbox) {
+    selectAllCheckbox.addEventListener("change", () => {
+      const checked = selectAllCheckbox.checked;
+      getReferenceCheckboxes().forEach((cb) => (cb.checked = checked));
+    });
+
+    document.addEventListener("change", (e) => {
+      if (e.target && e.target.name === "reference_ids") {
+        const boxes = getReferenceCheckboxes();
+        if (boxes.length === 0) {
+          selectAllCheckbox.checked = false;
+          selectAllCheckbox.indeterminate = false;
+          return;
+        }
+        const allChecked = boxes.every((b) => b.checked);
+        selectAllCheckbox.checked = allChecked;
+        selectAllCheckbox.indeterminate = false;
+      }
+    });
+  }
 });
