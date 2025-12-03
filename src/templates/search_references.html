@@ -17,7 +17,7 @@
 </form>
 
 {% if query %}
-<h3>Search results: {{ results|count }}</h3>
+<h3>Search results: {{ results|length }}</h3>
   <div class="references-list">
     {% for reference in results %}
     <div class="reference-card">
