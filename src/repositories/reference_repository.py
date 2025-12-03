@@ -293,3 +293,43 @@ def get_reference_by_cite_key(cite_key):
         return None
 
     return Reference(row)
+
+
+def search_references_by_query(query):
+    sql = text(
+        """SELECT id,
+                reference_type,
+                cite_key,
+                title,
+                author,
+                year,
+                url,
+                publisher,
+                chapter,
+                journal,
+                volume,
+                pages,
+                booktitle
+            FROM references_table WHERE
+                cite_key ILIKE :like OR
+                title ILIKE :like OR
+                author ILIKE :like OR
+                CAST(year AS TEXT) ILIKE :like OR
+                url ILIKE :like OR
+                publisher ILIKE :like OR
+                chapter ILIKE :like OR
+                journal ILIKE :like OR
+                CAST(volume AS TEXT) ILIKE :like OR
+                CAST(pages AS TEXT) ILIKE :like OR
+                booktitle ILIKE :like
+        """
+    )
+
+    like = "%" + query + "%"
+    result = db.session.execute(sql, {"like": like})
+    rows = result.mappings().all()
+
+    if not rows:
+        return []
+
+    return [Reference(row) for row in rows]

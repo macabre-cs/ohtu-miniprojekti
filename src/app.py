@@ -6,7 +6,8 @@ from repositories.reference_repository import (
     get_reference,
     create_reference,
     delete_reference,
-    edit_reference
+    edit_reference,
+    search_references_by_query,
 )
 from config import app, test_env
 from util import validate_reference, validate_cite_key
@@ -129,6 +130,19 @@ def edit_reference_route(ref_id):
     except Exception as error:
         flash(str(error))
         return render_edit(form_data)
+
+
+@app.route("/search_references")
+def search_references_route():
+    query = request.args.get("query")
+    if query:
+        results = search_references_by_query(query)
+
+    else:
+        query = ""
+        results = []
+
+    return render_template("search_references.html", query=query, results=results)
 
 
 @app.route("/export_bibtex", methods=["POST"])
