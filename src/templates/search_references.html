@@ -4,6 +4,80 @@
 <h2>Search references</h2>
   
 <div class="search-container">
+  <!-- Toggle between simple and advanced search -->
+  <div style="margin-bottom: 15px;">
+    {% if advanced_mode %}
+    <button class="btn-neutral" type="button" onclick="window.location.href='/search_references'">
+      Switch to Simple Search
+    </button>
+    {% else %}
+    <button class="btn-neutral" type="button" onclick="window.location.href='/search_references?advanced=true'">
+      Switch to Advanced Search
+    </button>
+    {% endif %}
+  </div>
+
+  {% if advanced_mode %}
+  <!-- Advanced Search Form -->
+  <form action="/search_references" method="get">
+    <input type="hidden" name="advanced" value="true">
+    
+    <div class="search-field">
+      <label for="title">Title:</label>
+      <input type="text" name="title" id="title" value="{{ filters.title or '' }}" placeholder="Search by title..." />
+    </div>
+
+    <div class="search-field">
+      <label for="author">Author:</label>
+      <input type="text" name="author" id="author" value="{{ filters.author or '' }}" placeholder="Search by author..." />
+    </div>
+
+    <div class="search-field">
+      <label for="reference_type">Reference Type:</label>
+      <select name="reference_type" id="reference_type">
+        <option value="all" {% if filters.reference_type == 'all' %}selected{% endif %}>All Types</option>
+        <option value="article" {% if filters.reference_type == 'article' %}selected{% endif %}>Article</option>
+        <option value="book" {% if filters.reference_type == 'book' %}selected{% endif %}>Book</option>
+        <option value="inproceedings" {% if filters.reference_type == 'inproceedings' %}selected{% endif %}>Inproceedings</option>
+        <option value="misc" {% if filters.reference_type == 'misc' %}selected{% endif %}>Misc</option>
+      </select>
+    </div>
+
+    <div class="search-field">
+      <label for="year_from">Year From:</label>
+      <input type="number" name="year_from" id="year_from" value="{{ filters.year_from or '' }}" placeholder="e.g., 2000" />
+    </div>
+
+    <div class="search-field">
+      <label for="year_to">Year To:</label>
+      <input type="number" name="year_to" id="year_to" value="{{ filters.year_to or '' }}" placeholder="e.g., 2024" />
+    </div>
+
+    <div class="search-field">
+      <label for="cite_key">Cite Key:</label>
+      <input type="text" name="cite_key" id="cite_key" value="{{ filters.cite_key or '' }}" placeholder="Search by cite key..." />
+    </div>
+
+    <div class="search-field">
+      <label for="journal">Journal:</label>
+      <input type="text" name="journal" id="journal" value="{{ filters.journal or '' }}" placeholder="For articles..." />
+    </div>
+
+    <div class="search-field">
+      <label for="publisher">Publisher:</label>
+      <input type="text" name="publisher" id="publisher" value="{{ filters.publisher or '' }}" placeholder="For books..." />
+    </div>
+
+    <button class="btn-create" type="submit">Search</button>
+    <button class="btn-neutral" type="button" onclick="window.location.href='/search_references?advanced=true'">
+      Clear Filters
+    </button>
+    <button class="btn-neutral" type="button" onclick="window.location.href='/'">
+      Back to Home
+    </button>
+  </form>
+  {% else %}
+  <!-- Simple Search Form -->
   <form action="/search_references" method="get">
     
     <div class="search-field">
@@ -16,9 +90,10 @@
       Back to Home
     </button>
   </form>
+  {% endif %}
 </div>
 
-{% if query %}
+{% if results is defined and (query or advanced_mode) %}
 <h3>Search results: {{ results|length }}</h3>
 
 <div>

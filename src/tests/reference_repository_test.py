@@ -5,7 +5,8 @@ from repositories.reference_repository import (
     get_reference,
     delete_reference,
     edit_reference,
-    search_references_by_query
+    search_references_by_query,
+    search_references_advanced
     )
 from entities.reference import Reference
 
@@ -254,3 +255,42 @@ def test_search_reference_by_query(mock_reference_class):
     assert results[0].title == "Test Result 1"
 
     mock_query.filter.assert_called_once()
+
+
+@patch("repositories.reference_repository.Reference")
+def test_search_references_advanced(mock_reference_class):
+    """Test advanced search function executes and returns results."""
+    # Create mock references
+    mock_ref1 = MagicMock()
+    mock_ref1.title = "Machine Learning"
+    mock_ref1.author = "John Smith"
+    mock_ref1.year = 2021
+
+    mock_ref2 = MagicMock()
+    mock_ref2.title = "Deep Learning"
+    mock_ref2.author = "Jane Doe"
+    mock_ref2.year = 2022
+
+    # Mock the query chain to allow multiple .filter() calls
+    mock_query = MagicMock()
+    mock_query.filter.return_value = mock_query  # Return self for chaining
+    mock_query.all.return_value = [mock_ref1, mock_ref2]
+
+    mock_reference_class.query = mock_query
+
+    # Test with multiple filters
+    filters = {
+        'title': 'learning',
+        'author': 'smith',
+        'reference_type': 'article',
+    }
+
+    results = search_references_advanced(filters)
+
+    # Verify results are returned
+    assert len(results) == 2
+    assert results[0].title == "Machine Learning"
+    assert results[1].author == "Jane Doe"
+
+    # Verify filter was called multiple times (once per filter)
+    assert mock_query.filter.call_count == 3
