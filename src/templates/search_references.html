@@ -1,20 +1,22 @@
 {% extends "layout.html" %} {% block title %} Search references {% endblock %}
 {% block body %}
 
-<h2 class="head-form">Search references</h2>
+<h2>Search references</h2>
   
-<form class="form" action="/search_references" method="get">
-  
-  <div class="form-field">
-    <label for="query">Search:</label>
-    <input type="text" name="query" value="{{ query or '' }}" />
-  </div>
+<div class="search-container">
+  <form action="/search_references" method="get">
+    
+    <div class="search-field">
+      <label for="query">Search:</label>
+      <input type="text" name="query" id="query" value="{{ query or '' }}" placeholder="Search by type, title, author, year, cite key, etc..." />
+    </div>
 
-  <button class="btn-create" type="submit">Search</button>
-  <button class="btn-neutral" type="button" onclick="window.location.href='/'">
-    Back to Home
-  </button>
-</form>
+    <button class="btn-create" type="submit">Search</button>
+    <button class="btn-neutral" type="button" onclick="window.location.href='/'">
+      Back to Home
+    </button>
+  </form>
+</div>
 
 {% if query %}
 <h3>Search results: {{ results|length }}</h3>
