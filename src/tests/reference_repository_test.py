@@ -46,6 +46,14 @@ def test_create_book_reference(mock_db):
 
     reference = Reference(reference_dict_test)
 
+    assert reference.reference_type == "book"
+    assert reference.cite_key == "key3"
+    assert reference.title == "Title 3"
+    assert reference.author == "Author 3"
+    assert reference.year == 2022
+    assert reference.publisher == "Publisher C"
+    assert reference.chapter == "Chapter 1"
+
     create_reference(reference)
 
     # check that add gets called with the reference
@@ -70,6 +78,15 @@ def test_create_article_reference(mock_db):
 
     reference = Reference(reference_dict_test)
 
+    assert reference.reference_type == "article"
+    assert reference.cite_key == "key4"
+    assert reference.title == "Article Title"
+    assert reference.author == "Article Author"
+    assert reference.year == 2023
+    assert reference.journal == "Journal X"
+    assert reference.volume == "42"
+    assert reference.pages == "10-20"
+
     create_reference(reference)
 
     # check that add gets called with the reference
@@ -92,6 +109,13 @@ def test_create_inproceedings_reference(mock_db):
 
     reference = Reference(reference_dict_test)
 
+    assert reference.reference_type == "inproceedings"
+    assert reference.cite_key == "key5"
+    assert reference.title == "Inproc Title"
+    assert reference.author == "Inproc Author"
+    assert reference.year == 2024
+    assert reference.booktitle == "Proceedings Y"
+
     create_reference(reference)
 
     # check that add gets called with the reference
@@ -112,6 +136,13 @@ def test_misc_reference(mock_db):
     }
 
     reference = Reference(reference_dict_test)
+
+    assert reference.reference_type == "misc"
+    assert reference.cite_key == "key6"
+    assert reference.title == "Scrum (project management)"
+    assert reference.author == "Wikipedia"
+    assert reference.year == 2025
+    assert reference.url == "https://en.wikipedia.org/wiki/Scrum_(project_management)"
 
     create_reference(reference)
 
@@ -202,12 +233,24 @@ def test_edit_reference(mock_reference_class, mock_db):
     mock_db.session.commit.assert_called_once()
 
 
-@patch("repositories.reference_repository.db")
-def test_search_reference_by_query(mock_db):
-    # call delete and ensure execute and commit are called with expected id
-    search_references_by_query("test query")
+@patch("repositories.reference_repository.Reference")
+def test_search_reference_by_query(mock_reference_class):
+    # Mock query filter and all() to return search results
+    mock_ref1 = MagicMock()
+    mock_ref1.title = "Test Result 1"
 
-    mock_db.session.execute.assert_called_once()
-    called_args, called_kwargs = mock_db.session.execute.call_args
-    params = called_args[1] if len(called_args) > 1 else called_kwargs
-    assert params["query"] == "%test query%"
+    mock_ref2 = MagicMock()
+    mock_ref2.title = "Test Result 2"
+
+    # Mock the query chain
+    mock_query = MagicMock()
+    mock_query.filter.return_value.all.return_value = [mock_ref1, mock_ref2]
+    mock_reference_class.query = mock_query
+
+    results = search_references_by_query("test query")
+
+    # Verify results
+    assert len(results) == 2
+    assert results[0].title == "Test Result 1"
+
+    mock_query.filter.assert_called_once()

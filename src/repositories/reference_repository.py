@@ -54,41 +54,23 @@ def get_reference_by_cite_key(cite_key):
 
 
 def search_references_by_query(query):
-    sql = text(
-        """SELECT id,
-                reference_type,
-                cite_key,
-                title,
-                author,
-                year,
-                url,
-                publisher,
-                chapter,
-                journal,
-                volume,
-                pages,
-                booktitle
-            FROM references_table WHERE
-                reference_type ILIKE :query OR
-                cite_key ILIKE :query OR
-                title ILIKE :query OR
-                author ILIKE :query OR
-                CAST(year AS TEXT) ILIKE :query OR
-                url ILIKE :query OR
-                publisher ILIKE :query OR
-                chapter ILIKE :query OR
-                journal ILIKE :query OR
-                CAST(volume AS TEXT) ILIKE :query OR
-                CAST(pages AS TEXT) ILIKE :query OR
-                booktitle ILIKE :query
-        """
-    )
-
-    like = "%" + query + "%"
-    result = db.session.execute(sql, {"query": like})
-    rows = result.mappings().all()
-
-    if not rows:
+    """Search references by any field containing the query string."""
+    if not query:
         return []
 
-    return [Reference(row) for row in rows]
+    search_pattern = f"%{query}%"
+
+    return Reference.query.filter(
+        (Reference.reference_type.ilike(search_pattern)) |
+        (Reference.cite_key.ilike(search_pattern)) |
+        (Reference.title.ilike(search_pattern)) |
+        (Reference.author.ilike(search_pattern)) |
+        (db.cast(Reference.year, db.String).ilike(search_pattern)) |
+        (Reference.url.ilike(search_pattern)) |
+        (Reference.publisher.ilike(search_pattern)) |
+        (Reference.chapter.ilike(search_pattern)) |
+        (Reference.journal.ilike(search_pattern)) |
+        (Reference.volume.ilike(search_pattern)) |
+        (Reference.pages.ilike(search_pattern)) |
+        (Reference.booktitle.ilike(search_pattern))
+    ).all()
