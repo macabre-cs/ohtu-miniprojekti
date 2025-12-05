@@ -18,10 +18,45 @@
 
 {% if query %}
 <h3>Search results: {{ results|length }}</h3>
+
+<div>
+  <p>
+    <button
+      class="btn-create"
+      type="button"
+      onclick="document.getElementById('export-form').submit()"
+    >
+      Export BibTeX
+    </button>
+
+    <label>
+      <input type="checkbox" id="select-all">
+      Select all
+    </label>
+  </p>
+</div>
+
+{% with messages = get_flashed_messages() %} {% if messages %}
+  <ul>
+    {% for message in messages %}
+    <li>{{ message }}</li>
+    {% endfor %}
+  </ul>
+{% endif %} {% endwith %}
+
+<form id="export-form" action="/export_bibtex" method="POST">
+  <input type="hidden" name="query" value="{{ query }}">
+  <input type="hidden" name="from_search" value="true">
   <div class="references-list">
     {% for reference in results %}
     <div class="reference-card">
       <div class="reference-header">
+        <input
+          type="checkbox"
+          name="reference_ids"
+          value="{{ reference.id }}"
+          id="checkbox-{{ loop.index }}"
+        />
         <a class="reference-title" href="/reference/{{ reference.id }}"
           >{{ reference.title }}</a
         >
@@ -54,5 +89,7 @@
     </div>
     {% endfor %}
   </div>
+</form>
+
 {% endif %}
 {% endblock %}
