@@ -29,14 +29,15 @@ def get_references():
 
 
 def create_reference(reference):
-    if reference.reference_type == 'book':
+    if reference.reference_type == "book":
         create_book_ref(reference)
-    elif reference.reference_type == 'article':
+    elif reference.reference_type == "article":
         create_article_ref(reference)
-    elif reference.reference_type == 'inproceedings':
+    elif reference.reference_type == "inproceedings":
         create_inproceedings_ref(reference)
-    elif reference.reference_type == 'misc':
+    elif reference.reference_type == "misc":
         create_misc_ref(reference)
+
 
 def create_book_ref(reference):
     sql = text(
@@ -105,12 +106,17 @@ def create_inproceedings_ref(reference):
                    :year,
                    :booktitle)"""
     )
-    db.session.execute(sql, {"reference_type": reference.reference_type,
-                             "cite_key": reference.cite_key,
-                             "title": reference.title,
-                             "author": reference.author,
-                             "year": reference.year,
-                             "booktitle": reference.booktitle})
+    db.session.execute(
+        sql,
+        {
+            "reference_type": reference.reference_type,
+            "cite_key": reference.cite_key,
+            "title": reference.title,
+            "author": reference.author,
+            "year": reference.year,
+            "booktitle": reference.booktitle,
+        },
+    )
     db.session.commit()
 
 
@@ -125,13 +131,19 @@ def create_misc_ref(reference):
                    :year,
                    :url)"""
     )
-    db.session.execute(sql, {"reference_type": reference.reference_type,
-                             "cite_key": reference.cite_key,
-                             "title": reference.title,
-                             "author": reference.author,
-                             "year": reference.year,
-                             "url": reference.url})
+    db.session.execute(
+        sql,
+        {
+            "reference_type": reference.reference_type,
+            "cite_key": reference.cite_key,
+            "title": reference.title,
+            "author": reference.author,
+            "year": reference.year,
+            "url": reference.url,
+        },
+    )
     db.session.commit()
+
 
 def delete_reference(ref_id):
     sql = text("""DELETE FROM references_table WHERE id = :id""")
@@ -140,13 +152,13 @@ def delete_reference(ref_id):
 
 
 def edit_reference(ref_id, reference):
-    if reference.reference_type == 'book':
+    if reference.reference_type == "book":
         edit_book_ref(ref_id, reference)
-    elif reference.reference_type == 'article':
+    elif reference.reference_type == "article":
         edit_article_ref(ref_id, reference)
-    elif reference.reference_type == 'inproceedings':
+    elif reference.reference_type == "inproceedings":
         edit_inproceedings_ref(ref_id, reference)
-    elif reference.reference_type == 'misc':
+    elif reference.reference_type == "misc":
         edit_misc_ref(ref_id, reference)
 
 
@@ -172,10 +184,11 @@ def edit_book_ref(ref_id, reference):
             "author": reference.author,
             "year": reference.year,
             "publisher": reference.publisher,
-            "chapter": reference.chapter
+            "chapter": reference.chapter,
         },
     )
     db.session.commit()
+
 
 def edit_article_ref(ref_id, reference):
     sql = text(
@@ -206,6 +219,7 @@ def edit_article_ref(ref_id, reference):
     )
     db.session.commit()
 
+
 def edit_inproceedings_ref(ref_id, reference):
     sql = text(
         """UPDATE references_table
@@ -230,6 +244,7 @@ def edit_inproceedings_ref(ref_id, reference):
         },
     )
     db.session.commit()
+
 
 def edit_misc_ref(ref_id, reference):
     sql = text(
@@ -311,6 +326,7 @@ def search_references_by_query(query):
                 pages,
                 booktitle
             FROM references_table WHERE
+                reference_type ILIKE :query OR
                 cite_key ILIKE :query OR
                 title ILIKE :query OR
                 author ILIKE :query OR
