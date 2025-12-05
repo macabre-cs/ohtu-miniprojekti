@@ -7,6 +7,14 @@ unit testing and maintenance easier.
 """
 
 from typing import Dict, Any, List, Tuple
+import html
+
+
+def _clean_text(value: Any) -> str:
+    """Return a trimmed, HTML-unescaped string for text fields."""
+    if value is None:
+        return ""
+    return html.unescape(str(value)).strip()
 
 
 def _get_message(metadata: Any) -> Dict[str, Any]:
@@ -18,14 +26,14 @@ def _get_message(metadata: Any) -> Dict[str, Any]:
 
 def _extract_title(msg: Dict[str, Any]) -> str:
     titles = msg.get("title") or []
-    return titles[0] if titles else ""
+    return _clean_text(titles[0]) if titles else ""
 
 
 def _format_authors(msg: Dict[str, Any]) -> Tuple[List[str], str]:
     authors = []
     for a in msg.get("author", []):
-        given = (a.get("given") or "").strip()
-        family = (a.get("family") or "").strip()
+        given = _clean_text(a.get("given"))
+        family = _clean_text(a.get("family"))
         if family and given:
             authors.append(f"{family}, {given}")
         elif family:
@@ -91,15 +99,15 @@ def parse_crossref(metadata: Any, doi: str | None = None) -> Dict[str, Any]:
     out["authors_formatted"] = formatted
 
     out["year"] = _extract_year(m)
-    out["publisher"] = m.get("publisher") or ""
+    out["publisher"] = _clean_text(m.get("publisher"))
 
     container = m.get("container-title") or []
-    out["journal"] = container[0] if container else ""
+    out["journal"] = _clean_text(container[0]) if container else ""
 
-    out["volume"] = m.get("volume") or ""
-    out["pages"] = m.get("page") or m.get("article-number") or ""
+    out["volume"] = _clean_text(m.get("volume"))
+    out["pages"] = _clean_text(m.get("page") or m.get("article-number"))
 
-    out["chapter"] = m.get("chapter") or ""
+    out["chapter"] = _clean_text(m.get("chapter"))
 
     ref_type, booktitle = _determine_reference_type_and_booktitle(m, out["journal"])  # type: ignore[arg-type]
     out["reference_type"] = ref_type

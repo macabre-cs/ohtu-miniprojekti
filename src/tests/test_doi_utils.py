@@ -100,6 +100,22 @@ def sample_authors_variants():
     }
 
 
+def sample_html_entities_message():
+    return {
+        "message": {
+            "title": ["Cats &amp; Dogs: A Study"],
+            "author": [
+                {"given": "Ann &amp; Co.", "family": "O'Neil"},
+            ],
+            "issued": {"date-parts": [[2022]]},
+            "publisher": "Pets &amp; Friends Publishing",
+            "container-title": ["Journal of Cats &amp; Dogs"],
+            "page": "5&amp;-10",
+            "type": "journal-article",
+        }
+    }
+
+
 def test_parse_crossref_book_with_chapter():
     data = sample_book_message()
     parsed = parse_crossref(data, doi="10.9999/bookdoi")
@@ -141,3 +157,15 @@ def test_cite_key_fallback_to_doi():
     data = {"message": {"title": ["No Authors"], "type": "journal-article"}}
     parsed = parse_crossref(data, doi="10.9999/testdoi")
     assert parsed["cite_key"] == "10.9999_testdoi"
+
+
+def test_parse_crossref_unescapes_html_entities():
+    data = sample_html_entities_message()
+    parsed = parse_crossref(data, doi="10.5000/html01")
+
+    assert parsed["title"] == "Cats & Dogs: A Study"
+    assert parsed["authors"] == ["O'Neil, Ann & Co."]
+    assert parsed["authors_formatted"] == "O'Neil, Ann & Co."
+    assert parsed["publisher"] == "Pets & Friends Publishing"
+    assert parsed["journal"] == "Journal of Cats & Dogs"
+    assert parsed["pages"] == "5&-10"

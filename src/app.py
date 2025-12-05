@@ -74,20 +74,17 @@ def _fetch_and_parse_doi(doi):
     """
     if not doi:
         return None, None
-    try:
-        metadata = get_reference_by_doi(doi)
-    except Exception as e:
-        return None, f"DOI lookup failed: {e}"
 
+    metadata = get_reference_by_doi(doi)
     if not metadata:
         return None, f"DOI '{doi}' could not be resolved"
 
     try:
         form_data = parse_crossref(metadata, doi)
-    except Exception as e:
-        return None, f"Failed to parse DOI metadata: {e}"
+    except Exception:
+        return None, "Failed to parse DOI metadata"
 
-    # ensure author text is available for partials expecting reference.author
+    # ensure author text is available for templates expecting `author`
     if form_data.get("authors_formatted") and not form_data.get("author"):
         form_data["author"] = form_data.get("authors_formatted")
 
