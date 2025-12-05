@@ -69,7 +69,7 @@ def populate_test_data():
             "reference_type": "inproceedings",
             "cite_key": "TurskaSoft2018",
             "title": "Turskakoodin refaktorointi: vähemmän suolaa, enemmän logiikkaa",
-            "author": "Teemu Turska",
+            "author": "Turska, Teemu",
             "year": 2018,
             "booktitle": "Pohjoisten Kalojen Teknologiakongressi",
         },
