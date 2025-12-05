@@ -8,6 +8,15 @@ block body %}
       Create a new reference
     </button>
 
+    <button class="btn-create" onclick="window.location.href='/search_references'">
+      Search references
+    </button>
+
+    <button class="btn-create" id="bounce-cat">Click me :3</button>
+    <div id="cat-container" style="display:none;">
+      <img src="{{ url_for('static', filename='kissa.gif') }}" id="bouncing-cat" alt="Bouncing Cat" />
+    </div>
+
     <button
       class="btn-create"
       type="button"

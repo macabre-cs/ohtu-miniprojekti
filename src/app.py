@@ -6,16 +6,19 @@ from repositories.reference_repository import (
     get_reference,
     create_reference,
     delete_reference,
-    edit_reference
+    edit_reference,
+    search_references_by_query,
 )
 from config import app, test_env
 from util import validate_reference, validate_cite_key
 from entities.reference import Reference
 from bibtex_generator import generate_bibtex
 
+
 def format_authors(authors):
     cleaned = [a.strip() for a in authors if a.strip()]
     return "; ".join(cleaned)
+
 
 @app.route("/")
 def index():
@@ -27,6 +30,7 @@ def index():
 def new():
     return render_template("new_reference.html", curr_year=datetime.now().year)
 
+
 @app.route("/load_fields/<ref_type>/<ref_id>", methods=["GET"])
 def load_fields(ref_type, ref_id):
     reference = get_reference(ref_id) if ref_id != "none" else None
@@ -34,7 +38,7 @@ def load_fields(ref_type, ref_id):
         "book": "new_book.html",
         "article": "new_article.html",
         "inproceedings": "new_inproceedings.html",
-        "misc": "new_misc.html"
+        "misc": "new_misc.html",
     }
     if ref_type not in templates:
         return "Invalid reference type", 400
@@ -131,12 +135,29 @@ def edit_reference_route(ref_id):
         return render_edit(form_data)
 
 
+@app.route("/search_references")
+def search_references_route():
+    query = request.args.get("query")
+    if query:
+        results = search_references_by_query(query)
+
+    else:
+        query = ""
+        results = []
+
+    return render_template("search_references.html", query=query, results=results)
+
+
 @app.route("/export_bibtex", methods=["POST"])
 def export_bibtex():
     reference_ids = request.form.getlist("reference_ids")
+    from_search = request.form.get("from_search") == "true"
+    query = request.form.get("query", "")
 
     if not reference_ids:
         flash("No references selected")
+        if from_search:
+            return redirect(f"/search_references?query={query}")
         return redirect("/")
 
     references = [get_reference(ref_id) for ref_id in reference_ids]
@@ -146,7 +167,7 @@ def export_bibtex():
     return Response(
         bibtex,
         mimetype="text/plain",
-        headers={"Content-Disposition": "attachment;filename=references.bib"}
+        headers={"Content-Disposition": "attachment;filename=references.bib"},
     )
 
 

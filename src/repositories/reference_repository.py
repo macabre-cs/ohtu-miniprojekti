@@ -51,3 +51,44 @@ def get_reference(ref_id):
 def get_reference_by_cite_key(cite_key):
     """Get a reference by its citation key."""
     return Reference.query.filter_by(cite_key=cite_key).first()
+
+
+def search_references_by_query(query):
+    sql = text(
+        """SELECT id,
+                reference_type,
+                cite_key,
+                title,
+                author,
+                year,
+                url,
+                publisher,
+                chapter,
+                journal,
+                volume,
+                pages,
+                booktitle
+            FROM references_table WHERE
+                reference_type ILIKE :query OR
+                cite_key ILIKE :query OR
+                title ILIKE :query OR
+                author ILIKE :query OR
+                CAST(year AS TEXT) ILIKE :query OR
+                url ILIKE :query OR
+                publisher ILIKE :query OR
+                chapter ILIKE :query OR
+                journal ILIKE :query OR
+                CAST(volume AS TEXT) ILIKE :query OR
+                CAST(pages AS TEXT) ILIKE :query OR
+                booktitle ILIKE :query
+        """
+    )
+
+    like = "%" + query + "%"
+    result = db.session.execute(sql, {"query": like})
+    rows = result.mappings().all()
+
+    if not rows:
+        return []
+
+    return [Reference(row) for row in rows]

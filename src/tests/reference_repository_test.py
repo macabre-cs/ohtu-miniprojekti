@@ -4,7 +4,8 @@ from repositories.reference_repository import (
     create_reference,
     get_reference,
     delete_reference,
-    edit_reference
+    edit_reference,
+    search_references_by_query
     )
 from entities.reference import Reference
 
@@ -199,3 +200,14 @@ def test_edit_reference(mock_reference_class, mock_db):
 
     # ensure commit was called
     mock_db.session.commit.assert_called_once()
+
+
+@patch("repositories.reference_repository.db")
+def test_search_reference_by_query(mock_db):
+    # call delete and ensure execute and commit are called with expected id
+    search_references_by_query("test query")
+
+    mock_db.session.execute.assert_called_once()
+    called_args, called_kwargs = mock_db.session.execute.call_args
+    params = called_args[1] if len(called_args) > 1 else called_kwargs
+    assert params["query"] == "%test query%"

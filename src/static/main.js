@@ -80,4 +80,16 @@ document.addEventListener("DOMContentLoaded", () => {
       }
     });
   }
+
+  // ------------------------------
+  // Bouncing Cat
+  // ------------------------------
+
+  document.getElementById('bounce-cat').onclick = function() {
+    const catContainer = document.getElementById('cat-container');
+    catContainer.style.display = 'block';
+    setTimeout(() => {
+      catContainer.style.display = 'none';
+    }, 3000); // Hide after 3 seconds
+  };
 });
