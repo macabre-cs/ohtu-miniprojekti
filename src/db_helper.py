@@ -1,52 +1,24 @@
-import os
-from sqlalchemy import text
 from config import db, app
-
+from entities.reference import Reference
 
 
 def reset_db():
+    """Clear all references from the database."""
     print("Clearing contents from table references_table")
-    sql = text("DELETE FROM references_table")
-    db.session.execute(sql)
+    Reference.query.delete()
     db.session.commit()
-
-
-def tables():
-    """Returns all table names from the database except those ending with _id_seq"""
-    sql = text(
-        "SELECT table_name "
-        "FROM information_schema.tables "
-        "WHERE table_schema = 'public' "
-        "AND table_name NOT LIKE '%_id_seq'"
-    )
-
-    result = db.session.execute(sql)
-    return [row[0] for row in result.fetchall()]
 
 
 def setup_db():
     """
-      Creating the database
-      If database tables already exist, those are dropped before the creation
+    Create the database tables.
+    If database tables already exist, those are dropped before the creation.
     """
-    tables_in_db = tables()
-    if len(tables_in_db) > 0:
-        print(f"Tables exist, dropping: {', '.join(tables_in_db)}")
-        for table in tables_in_db:
-            sql = text(f"DROP TABLE {table}")
-            db.session.execute(sql)
-        db.session.commit()
+    print("Dropping existing tables (if any)")
+    db.drop_all()
 
-    print("Creating database")
-
-    # Read schema from schema.sql file
-    schema_path = os.path.join(os.path.dirname(__file__), 'schema.sql')
-    # Explicitly set encoding to avoid locale-dependent defaults
-    with open(schema_path, 'r', encoding='utf-8') as f:
-        schema_sql = f.read().strip()
-
-    sql = text(schema_sql)
-    db.session.execute(sql)
+    print("Creating database tables")
+    db.create_all()
     db.session.commit()
 
 
