@@ -123,7 +123,19 @@
 
 <form id="export-form" action="/export_bibtex" method="POST">
   <input type="hidden" name="query" value="{{ query }}">
+  {% if advanced_mode %}
+  <input type="hidden" name="advanced" value="true">
+  <input type="hidden" name="title" value="{{ filters.title }}">
+  <input type="hidden" name="author" value="{{ filters.author }}">
+  <input type="hidden" name="year_from" value="{{ filters.year_from }}">
+  <input type="hidden" name="year_to" value="{{ filters.year_to }}">
+  <input type="hidden" name="reference_type" value="{{ filters.reference_type }}">
+  <input type="hidden" name="cite_key" value="{{ filters.cite_key }}">
+  <input type="hidden" name="journal" value="{{ filters.journal }}">
+  <input type="hidden" name="publisher" value="{{ filters.publisher }}">
+  {% else %}
   <input type="hidden" name="from_search" value="true">
+  {% endif %}
   <div class="references-list">
     {% for reference in results %}
     <div class="reference-card">

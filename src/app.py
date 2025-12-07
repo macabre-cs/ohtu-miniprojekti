@@ -186,12 +186,33 @@ def search_references_route():
 def export_bibtex():
     reference_ids = request.form.getlist("reference_ids")
     from_search = request.form.get("from_search") == "true"
+    advanced_search = request.form.get("advanced") == "true"
     query = request.form.get("query", "")
+    filters = {
+        'title': request.form.get('title', '').strip(),
+        'author': request.form.get('author', '').strip(),
+        'year_from': request.form.get('year_from', '').strip(),
+        'year_to': request.form.get('year_to', '').strip(),
+        'reference_type': request.form.get('reference_type', 'all'),
+        'cite_key': request.form.get('cite_key', '').strip(),
+        'journal': request.form.get('journal', '').strip(),
+        'publisher': request.form.get('publisher', '').strip(),
+    }
 
     if not reference_ids:
         flash("No references selected")
         if from_search:
             return redirect(f"/search_references?query={query}")
+        elif advanced_search:
+            return redirect(f"/search_references?advanced=true" \
+                            f"&title={filters["title"]}" \
+                            f"&author={filters["author"]}" \
+                            f"&year_from={filters["year_from"]}" \
+                            f"&year_to={filters["year_to"]}" \
+                            f"&reference_type={filters["reference_type"]}" \
+                            f"&cite_key={filters["cite_key"]}" \
+                            f"&journal={filters["journal"]}" \
+                            f"&publisher={filters["publisher"]}")
         return redirect("/")
 
     references = [get_reference(ref_id) for ref_id in reference_ids]
