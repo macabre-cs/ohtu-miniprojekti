@@ -122,7 +122,7 @@
 {% endif %} {% endwith %}
 
 <form id="export-form" action="/export_bibtex" method="POST">
-  <input type="hidden" name="query" value="{{ query }}">
+  <input type="hidden" name="from_search" value="true">
   {% if advanced_mode %}
   <input type="hidden" name="advanced" value="true">
   <input type="hidden" name="title" value="{{ filters.title }}">
@@ -134,7 +134,7 @@
   <input type="hidden" name="journal" value="{{ filters.journal }}">
   <input type="hidden" name="publisher" value="{{ filters.publisher }}">
   {% else %}
-  <input type="hidden" name="from_search" value="true">
+  <input type="hidden" name="query" value="{{ query }}">
   {% endif %}
   <div class="references-list">
     {% for reference in results %}
