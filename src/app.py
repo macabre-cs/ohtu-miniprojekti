@@ -162,28 +162,28 @@ def search_references_route():
             or (key == "reference_type" and value != "all")
         )
 
-        if has_filters:
-            results = search_references_advanced(filters)
-        else:
-            flash("No search filters set")
-            results = []
+        results = search_references_advanced(filters) if has_filters else []
+        show_results = has_filters
 
         return render_template(
             "search_references.html",
             advanced_mode=True,
             filters=filters,
             results=results,
+            show_results=show_results,
         )
 
     # Simple search mode
     query = request.args.get("query", "").strip()
-    if query:
-        results = search_references_by_query(query)
-    else:
-        results = []
+    show_results = bool(query)
+    results = search_references_by_query(query) if show_results else []
 
     return render_template(
-        "search_references.html", query=query, results=results, advanced_mode=False
+        "search_references.html",
+        query=query,
+        results=results,
+        advanced_mode=False,
+        show_results=show_results,
     )
 
 
@@ -211,14 +211,14 @@ def export_bibtex():
         if advanced_search:
             return redirect(
                 f"/search_references?advanced=true"
-                f"&title={filters["title"]}"
-                f"&author={filters["author"]}"
-                f"&year_from={filters["year_from"]}"
-                f"&year_to={filters["year_to"]}"
-                f"&reference_type={filters["reference_type"]}"
-                f"&cite_key={filters["cite_key"]}"
-                f"&journal={filters["journal"]}"
-                f"&publisher={filters["publisher"]}"
+                f"&title={filters['title']}"
+                f"&author={filters['author']}"
+                f"&year_from={filters['year_from']}"
+                f"&year_to={filters['year_to']}"
+                f"&reference_type={filters['reference_type']}"
+                f"&cite_key={filters['cite_key']}"
+                f"&journal={filters['journal']}"
+                f"&publisher={filters['publisher']}"
             )
         return redirect("/")
 
