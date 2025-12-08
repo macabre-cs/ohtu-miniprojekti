@@ -6,9 +6,10 @@ from repositories.reference_repository import (
     delete_reference,
     edit_reference,
     search_references_by_query,
-    search_references_advanced
-    )
+    search_references_advanced,
+)
 from entities.reference import Reference
+
 
 @patch("repositories.reference_repository.Reference")
 def test_get_references(mock_reference_class):
@@ -42,7 +43,7 @@ def test_create_book_reference(mock_db):
         "author": "Author 3",
         "year": 2022,
         "publisher": "Publisher C",
-        "chapter": "Chapter 1"
+        "chapter": "Chapter 1",
     }
 
     reference = Reference(reference_dict_test)
@@ -74,7 +75,7 @@ def test_create_article_reference(mock_db):
         "year": 2023,
         "journal": "Journal X",
         "volume": "42",
-        "pages": "10-20"
+        "pages": "10-20",
     }
 
     reference = Reference(reference_dict_test)
@@ -105,7 +106,7 @@ def test_create_inproceedings_reference(mock_db):
         "title": "Inproc Title",
         "author": "Inproc Author",
         "year": 2024,
-        "booktitle": "Proceedings Y"
+        "booktitle": "Proceedings Y",
     }
 
     reference = Reference(reference_dict_test)
@@ -125,6 +126,7 @@ def test_create_inproceedings_reference(mock_db):
     # check that the function commits
     mock_db.session.commit.assert_called_once()
 
+
 @patch("repositories.reference_repository.db")
 def test_misc_reference(mock_db):
     reference_dict_test = {
@@ -133,7 +135,7 @@ def test_misc_reference(mock_db):
         "title": "Scrum (project management)",
         "author": "Wikipedia",
         "year": 2025,
-        "url": "https://en.wikipedia.org/wiki/Scrum_(project_management)"
+        "url": "https://en.wikipedia.org/wiki/Scrum_(project_management)",
     }
 
     reference = Reference(reference_dict_test)
@@ -152,6 +154,7 @@ def test_misc_reference(mock_db):
 
     # check that the function commits
     mock_db.session.commit.assert_called_once()
+
 
 @patch("repositories.reference_repository.Reference")
 def test_get_reference_found(mock_reference_class):
@@ -213,7 +216,7 @@ def test_edit_reference(mock_reference_class, mock_db):
         "author": "Edited Author",
         "year": 2030,
         "publisher": "Edited Publisher",
-        "chapter": "Chapter 5"
+        "chapter": "Chapter 5",
     }
 
     reference = Reference(reference_dict_test)
@@ -280,9 +283,9 @@ def test_search_references_advanced(mock_reference_class):
 
     # Test with multiple filters
     filters = {
-        'title': 'learning',
-        'author': 'smith',
-        'reference_type': 'article',
+        "title": "learning",
+        "author": "smith",
+        "reference_type": "article",
     }
 
     results = search_references_advanced(filters)
