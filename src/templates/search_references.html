@@ -94,33 +94,34 @@
 </div>
 
 {% if show_results %}
-<h3>Search results: {{ results|length }}</h3>
+<div id="results">
+  <h3>Search results: {{ results|length }}</h3>
 
-<div>
-  <p>
-    <button
-      class="btn-create"
-      type="button"
-      onclick="document.getElementById('export-form').submit()"
-    >
-      Export BibTeX
-    </button>
+  <div>
+    <p>
+      <button
+        class="btn-create"
+        type="button"
+        onclick="document.getElementById('export-form').submit()"
+      >
+        Export BibTeX
+      </button>
 
-    <label>
-      <input type="checkbox" id="select-all">
-      Select all
-    </label>
-  </p>
+      <label>
+        <input type="checkbox" id="select-all">
+        Select all
+      </label>
+    </p>
+  </div>
+
+  {% with messages = get_flashed_messages() %} {% if messages %}
+    <ul>
+      {% for message in messages %}
+      <li>{{ message }}</li>
+      {% endfor %}
+    </ul>
+  {% endif %} {% endwith %}
 </div>
-
-{% with messages = get_flashed_messages() %} {% if messages %}
-  <ul>
-    {% for message in messages %}
-    <li>{{ message }}</li>
-    {% endfor %}
-  </ul>
-{% endif %} {% endwith %}
-
 <form id="export-form" action="/export_bibtex" method="POST">
   <input type="hidden" name="from_search" value="true">
   {% if advanced_mode %}

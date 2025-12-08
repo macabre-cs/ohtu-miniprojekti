@@ -217,9 +217,10 @@ def export_bibtex():
                 f"&cite_key={filters['cite_key']}"
                 f"&journal={filters['journal']}"
                 f"&publisher={filters['publisher']}"
+                f"#results"
             )
         if from_search:
-            return redirect(f"/search_references?query={query}")
+            return redirect(f"/search_references?query={query}#results")
         return redirect("/")
 
     references = [get_reference(ref_id) for ref_id in reference_ids]

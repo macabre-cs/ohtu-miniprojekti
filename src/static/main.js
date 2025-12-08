@@ -82,6 +82,16 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   // ------------------------------
+  // Smooth Scroll to Results
+  // ------------------------------
+
+  if (window.location.hash === '#results') {
+    setTimeout(() => {
+      document.getElementById('results')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }, 100);
+  }
+
+  // ------------------------------
   // Bouncing Cat
   // ------------------------------
 
