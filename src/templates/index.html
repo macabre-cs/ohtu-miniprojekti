@@ -82,6 +82,28 @@ block body %}
       <p><strong>URL:</strong> {{ reference.url }}</p>
       {% endif %} {% endif %}
         </div>
+
+        <!-- Tags Section -->
+        <div class="tags-section">
+          <div class="tags-display">
+            {% for tag in reference.tags.all() %}
+              <span class="tag-badge" data-tag-id="{{ tag.id }}" data-reference-id="{{ reference.id }}">
+                {{ tag.name }}
+                <button type="button" class="tag-remove" onclick="removeTag({{ reference.id }}, {{ tag.id }})">&times;</button>
+              </span>
+            {% endfor %}
+          </div>
+          <div class="tag-input-container">
+            <input 
+              type="text" 
+              class="tag-input" 
+              placeholder="Add tag..." 
+              id="tag-input-{{ reference.id }}"
+              onkeypress="if(event.key==='Enter'){event.preventDefault();addTag({{ reference.id }})}"
+            />
+            <button type="button" class="btn-add-tag" onclick="addTag({{ reference.id }})">+</button>
+          </div>
+        </div>
       </div>
       {% else %}
       <p>No references yet</p>

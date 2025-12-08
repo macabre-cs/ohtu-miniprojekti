@@ -130,3 +130,77 @@ document.addEventListener("DOMContentLoaded", () => {
     }, 3000); // Hide after 3 seconds
   };
 });
+
+// ------------------------------
+// Tag Management Functions
+// ------------------------------
+
+async function addTag(referenceId) {
+  const input = document.getElementById(`tag-input-${referenceId}`);
+  const tagName = input.value.trim();
+  
+  if (!tagName) {
+    return;
+  }
+
+  try {
+    const response = await fetch(`/reference/${referenceId}/tag`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ tag_name: tagName })
+    });
+
+    if (response.ok) {
+      const data = await response.json();
+      
+      // Add the new tag to the display
+      const tagsDisplay = input.closest('.tags-section').querySelector('.tags-display');
+      const tagBadge = document.createElement('span');
+      tagBadge.className = 'tag-badge';
+      tagBadge.setAttribute('data-tag-id', data.tag_id);
+      tagBadge.setAttribute('data-reference-id', referenceId);
+      tagBadge.innerHTML = `
+        ${tagName}
+        <button type="button" class="tag-remove" onclick="removeTag(${referenceId}, ${data.tag_id})">&times;</button>
+      `;
+      tagsDisplay.appendChild(tagBadge);
+      
+      // Clear input
+      input.value = '';
+    } else {
+      const error = await response.json();
+      alert(error.error || 'Failed to add tag');
+    }
+  } catch (error) {
+    console.error('Error adding tag:', error);
+    alert('Failed to add tag');
+  }
+}
+
+async function removeTag(referenceId, tagId) {
+  if (!confirm('Remove this tag?')) {
+    return;
+  }
+
+  try {
+    const response = await fetch(`/reference/${referenceId}/tag/${tagId}`, {
+      method: 'DELETE'
+    });
+
+    if (response.ok) {
+      // Remove the tag badge from the display
+      const tagBadge = document.querySelector(`[data-tag-id="${tagId}"][data-reference-id="${referenceId}"]`);
+      if (tagBadge) {
+        tagBadge.remove();
+      }
+    } else {
+      const error = await response.json();
+      alert(error.error || 'Failed to remove tag');
+    }
+  } catch (error) {
+    console.error('Error removing tag:', error);
+    alert('Failed to remove tag');
+  }
+}

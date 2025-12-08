@@ -14,3 +14,14 @@ CREATE TABLE references_table (
   booktitle TEXT,
   created_at TIMESTAMP DEFAULT NOW()
 );
+
+CREATE TABLE tags (
+  id SERIAL PRIMARY KEY,
+  name TEXT NOT NULL UNIQUE
+);
+
+CREATE TABLE reference_tags (
+  reference_id INTEGER NOT NULL REFERENCES references_table(id) ON DELETE CASCADE,
+  tag_id INTEGER NOT NULL REFERENCES tags(id) ON DELETE CASCADE,
+  PRIMARY KEY (reference_id, tag_id)
+);

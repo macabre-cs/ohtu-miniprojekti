@@ -11,9 +11,10 @@ from repositories.reference_repository import (
     search_references_by_query,
     search_references_advanced
 )
-from config import app, test_env
+from config import app, test_env, db
 from util import validate_reference, validate_cite_key
 from entities.reference import Reference
+from entities.tag import Tag
 from bibtex_generator import generate_bibtex
 from doi_utils import parse_crossref
 
@@ -22,7 +23,6 @@ from doi_utils import parse_crossref
 def format_authors(authors):
     cleaned = [a.strip() for a in authors if a.strip()]
     return "; ".join(cleaned)
-
 
 
 def _generate_dynamic_fields(form_data):
@@ -94,9 +94,6 @@ def _fetch_and_parse_doi(doi):
     return form_data, None
 
 
-
-
-
 @app.route("/")
 def index():
     references = get_references()
@@ -119,7 +116,6 @@ def new():
     return _render_new_reference({}, doi=None)
 
 
-
 @app.route("/new_reference_doi", methods=["GET", "POST"])
 def new_reference_doi():
     if request.method == "POST":
@@ -131,7 +127,6 @@ def new_reference_doi():
         return redirect(f"/new_reference?doi={doi}")
 
     return render_template("new_reference_doi.html")
-
 
 
 @app.route("/load_fields/<ref_type>/<ref_id>", methods=["GET"])
@@ -334,6 +329,55 @@ def export_bibtex():
         mimetype="text/plain",
         headers={"Content-Disposition": "attachment;filename=references.bib"},
     )
+
+
+@app.route("/reference/<int:reference_id>/tag", methods=["POST"])
+def add_tag_to_reference(reference_id):
+    """Add a tag to a reference."""
+
+    data = request.get_json()
+    tag_name = data.get("tag_name", "").strip()
+
+    if not tag_name:
+        return jsonify({"error": "Tag name is required"}), 400
+
+    reference = get_reference(reference_id)
+    if not reference:
+        return jsonify({"error": "Reference not found"}), 404
+
+    # Get or create tag
+    tag = Tag.query.filter_by(name=tag_name).first()
+    if not tag:
+        tag = Tag(name=tag_name)
+        db.session.add(tag)
+
+    # Add tag to reference if not already added
+    if tag not in reference.tags:
+        reference.tags.append(tag)
+        db.session.commit()
+        return jsonify({"message": "Tag added", "tag_id": tag.id}), 200
+
+    return jsonify({"message": "Tag already exists on this reference", "tag_id": tag.id}), 200
+
+
+@app.route("/reference/<int:reference_id>/tag/<int:tag_id>", methods=["DELETE"])
+def remove_tag_from_reference(reference_id, tag_id):
+    """Remove a tag from a reference."""
+
+    reference = get_reference(reference_id)
+    if not reference:
+        return jsonify({"error": "Reference not found"}), 404
+
+    tag = Tag.query.get(tag_id)
+    if not tag:
+        return jsonify({"error": "Tag not found"}), 404
+
+    if tag in reference.tags:
+        reference.tags.remove(tag)
+        db.session.commit()
+        return jsonify({"message": "Tag removed"}), 200
+
+    return jsonify({"error": "Tag not associated with this reference"}), 400
 
 
 # testausta varten oleva reitti

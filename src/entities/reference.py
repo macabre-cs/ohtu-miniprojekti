@@ -2,6 +2,7 @@
 
 from datetime import datetime
 from config import db
+from entities.associations import reference_tags
 
 
 class Reference(db.Model):
@@ -21,6 +22,14 @@ class Reference(db.Model):
     pages = db.Column(db.String)
     booktitle = db.Column(db.String)
     created_at = db.Column(db.DateTime, default=datetime.now)
+
+    # Relationship to tags (many-to-many)
+    tags = db.relationship(
+        'Tag',
+        secondary=reference_tags,
+        back_populates='references',
+        lazy='dynamic'
+    )
 
     def __init__(self, reference_dict=None, **kwargs):
         """

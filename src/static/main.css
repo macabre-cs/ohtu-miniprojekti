@@ -81,6 +81,93 @@ body {
   font-size: 0.95rem;
 }
 
+/* Tags section styles */
+
+.tags-display {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-bottom: 0.5rem;
+  min-height: 1.5rem;
+}
+
+.tag-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  padding: 0.25rem 0rem 0.25rem 0.25rem;
+  background: #e7f3ff;
+  color: #0066cc;
+  border-radius: 3px;
+  font-size: 0.85rem;
+  font-weight: 500;
+}
+
+
+.tag-remove {
+  background: none;
+  border: none;
+  color: #0066cc;
+  font-size: 1.2rem;
+  line-height: 1;
+  cursor: pointer;
+  padding: 0rem;
+  margin-left: 0.15rem;
+  opacity: 0.7;
+}
+
+.tag-remove:hover {
+  opacity: 1;
+  color: #ff4d4d;
+}
+
+.tag-input-container {
+  margin-top: 0.25rem;
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+}
+
+.tag-input {
+  flex: 0.4;
+  padding: 0.4rem 0.6rem;
+  border: 1px solid #dddddd;
+  border-radius: 4px;
+  font-size: 0.9rem;
+}
+
+.tag-input:focus {
+  outline: none;
+  border-color: var(--focus-color);
+  box-shadow: 0 0 0 2px rgba(0, 123, 255, 0.1);
+}
+
+.btn-add-tag {
+  height: 32px;
+  width: 32px;
+  margin: 0.2rem;
+  padding-bottom: 3px;
+  background: var(--create);
+  color: var(--btn-text);
+  border: none;
+  border-radius: var(--btn-radius);
+  font-size: 1.2rem;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background-color 0.2s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  line-height: 1;
+}
+
+.btn-add-tag:hover {
+  background: var(--create-hover);
+}
+
+/* Tags section styles END */
+
+
 .form {
   width: 90%;
   margin: 1rem auto 2rem auto;
