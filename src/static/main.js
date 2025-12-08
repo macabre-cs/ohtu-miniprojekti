@@ -41,7 +41,7 @@ document.addEventListener("DOMContentLoaded", () => {
       });
   }
 
-  if (refTypeSelect) {
+  if (refTypeSelect && typeof REFERENCE_ID !== 'undefined') {
     refTypeSelect.addEventListener("change", () => {
       loadTemplate(refTypeSelect.value, REFERENCE_ID);
     });

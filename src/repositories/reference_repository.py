@@ -32,13 +32,21 @@ def edit_reference(ref_id, reference):
         existing_ref.year = reference.year
 
         # Update type-specific fields
-        existing_ref.url = reference.url if hasattr(reference, 'url') else None
-        existing_ref.publisher = reference.publisher if hasattr(reference, 'publisher') else None
-        existing_ref.chapter = reference.chapter if hasattr(reference, 'chapter') else None
-        existing_ref.journal = reference.journal if hasattr(reference, 'journal') else None
-        existing_ref.volume = reference.volume if hasattr(reference, 'volume') else None
-        existing_ref.pages = reference.pages if hasattr(reference, 'pages') else None
-        existing_ref.booktitle = reference.booktitle if hasattr(reference, 'booktitle') else None
+        existing_ref.url = reference.url if hasattr(reference, "url") else None
+        existing_ref.publisher = (
+            reference.publisher if hasattr(reference, "publisher") else None
+        )
+        existing_ref.chapter = (
+            reference.chapter if hasattr(reference, "chapter") else None
+        )
+        existing_ref.journal = (
+            reference.journal if hasattr(reference, "journal") else None
+        )
+        existing_ref.volume = reference.volume if hasattr(reference, "volume") else None
+        existing_ref.pages = reference.pages if hasattr(reference, "pages") else None
+        existing_ref.booktitle = (
+            reference.booktitle if hasattr(reference, "booktitle") else None
+        )
 
         db.session.commit()
 
@@ -61,16 +69,61 @@ def search_references_by_query(query):
     search_pattern = f"%{query}%"
 
     return Reference.query.filter(
-        (Reference.reference_type.ilike(search_pattern)) |
-        (Reference.cite_key.ilike(search_pattern)) |
-        (Reference.title.ilike(search_pattern)) |
-        (Reference.author.ilike(search_pattern)) |
-        (db.cast(Reference.year, db.String).ilike(search_pattern)) |
-        (Reference.url.ilike(search_pattern)) |
-        (Reference.publisher.ilike(search_pattern)) |
-        (Reference.chapter.ilike(search_pattern)) |
-        (Reference.journal.ilike(search_pattern)) |
-        (Reference.volume.ilike(search_pattern)) |
-        (Reference.pages.ilike(search_pattern)) |
-        (Reference.booktitle.ilike(search_pattern))
+        (Reference.reference_type.ilike(search_pattern))
+        | (Reference.cite_key.ilike(search_pattern))
+        | (Reference.title.ilike(search_pattern))
+        | (Reference.author.ilike(search_pattern))
+        | (db.cast(Reference.year, db.String).ilike(search_pattern))
+        | (Reference.url.ilike(search_pattern))
+        | (Reference.publisher.ilike(search_pattern))
+        | (Reference.chapter.ilike(search_pattern))
+        | (Reference.journal.ilike(search_pattern))
+        | (Reference.volume.ilike(search_pattern))
+        | (Reference.pages.ilike(search_pattern))
+        | (Reference.booktitle.ilike(search_pattern))
     ).all()
+
+
+def search_references_advanced(filters):
+    query = Reference.query
+
+    # Apply title filter
+    if filters.get("title"):
+        query = query.filter(Reference.title.ilike(f"%{filters['title']}%"))
+
+    # Apply author filter
+    if filters.get("author"):
+        query = query.filter(Reference.author.ilike(f"%{filters['author']}%"))
+
+    # Apply year range filters
+    if filters.get("year_from"):
+        try:
+            year_from = int(filters["year_from"])
+            query = query.filter(Reference.year >= year_from)
+        except ValueError:
+            pass
+
+    if filters.get("year_to"):
+        try:
+            year_to = int(filters["year_to"])
+            query = query.filter(Reference.year <= year_to)
+        except ValueError:
+            pass
+
+    # Apply reference type filter
+    if filters.get("reference_type") and filters["reference_type"] != "all":
+        query = query.filter(Reference.reference_type == filters["reference_type"])
+
+    # Apply cite key filter
+    if filters.get("cite_key"):
+        query = query.filter(Reference.cite_key.ilike(f"%{filters['cite_key']}%"))
+
+    # Apply journal filter (for articles)
+    if filters.get("journal"):
+        query = query.filter(Reference.journal.ilike(f"%{filters['journal']}%"))
+
+    # Apply publisher filter (for books)
+    if filters.get("publisher"):
+        query = query.filter(Reference.publisher.ilike(f"%{filters['publisher']}%"))
+
+    return query.all()

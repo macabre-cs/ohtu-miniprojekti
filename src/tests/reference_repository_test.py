@@ -5,9 +5,11 @@ from repositories.reference_repository import (
     get_reference,
     delete_reference,
     edit_reference,
-    search_references_by_query
-    )
+    search_references_by_query,
+    search_references_advanced,
+)
 from entities.reference import Reference
+
 
 @patch("repositories.reference_repository.Reference")
 def test_get_references(mock_reference_class):
@@ -41,7 +43,7 @@ def test_create_book_reference(mock_db):
         "author": "Author 3",
         "year": 2022,
         "publisher": "Publisher C",
-        "chapter": "Chapter 1"
+        "chapter": "Chapter 1",
     }
 
     reference = Reference(reference_dict_test)
@@ -73,7 +75,7 @@ def test_create_article_reference(mock_db):
         "year": 2023,
         "journal": "Journal X",
         "volume": "42",
-        "pages": "10-20"
+        "pages": "10-20",
     }
 
     reference = Reference(reference_dict_test)
@@ -104,7 +106,7 @@ def test_create_inproceedings_reference(mock_db):
         "title": "Inproc Title",
         "author": "Inproc Author",
         "year": 2024,
-        "booktitle": "Proceedings Y"
+        "booktitle": "Proceedings Y",
     }
 
     reference = Reference(reference_dict_test)
@@ -124,6 +126,7 @@ def test_create_inproceedings_reference(mock_db):
     # check that the function commits
     mock_db.session.commit.assert_called_once()
 
+
 @patch("repositories.reference_repository.db")
 def test_misc_reference(mock_db):
     reference_dict_test = {
@@ -132,7 +135,7 @@ def test_misc_reference(mock_db):
         "title": "Scrum (project management)",
         "author": "Wikipedia",
         "year": 2025,
-        "url": "https://en.wikipedia.org/wiki/Scrum_(project_management)"
+        "url": "https://en.wikipedia.org/wiki/Scrum_(project_management)",
     }
 
     reference = Reference(reference_dict_test)
@@ -151,6 +154,7 @@ def test_misc_reference(mock_db):
 
     # check that the function commits
     mock_db.session.commit.assert_called_once()
+
 
 @patch("repositories.reference_repository.Reference")
 def test_get_reference_found(mock_reference_class):
@@ -212,7 +216,7 @@ def test_edit_reference(mock_reference_class, mock_db):
         "author": "Edited Author",
         "year": 2030,
         "publisher": "Edited Publisher",
-        "chapter": "Chapter 5"
+        "chapter": "Chapter 5",
     }
 
     reference = Reference(reference_dict_test)
@@ -254,3 +258,42 @@ def test_search_reference_by_query(mock_reference_class):
     assert results[0].title == "Test Result 1"
 
     mock_query.filter.assert_called_once()
+
+
+@patch("repositories.reference_repository.Reference")
+def test_search_references_advanced(mock_reference_class):
+    """Test advanced search function executes and returns results."""
+    # Create mock references
+    mock_ref1 = MagicMock()
+    mock_ref1.title = "Machine Learning"
+    mock_ref1.author = "John Smith"
+    mock_ref1.year = 2021
+
+    mock_ref2 = MagicMock()
+    mock_ref2.title = "Deep Learning"
+    mock_ref2.author = "Jane Doe"
+    mock_ref2.year = 2022
+
+    # Mock the query chain to allow multiple .filter() calls
+    mock_query = MagicMock()
+    mock_query.filter.return_value = mock_query  # Return self for chaining
+    mock_query.all.return_value = [mock_ref1, mock_ref2]
+
+    mock_reference_class.query = mock_query
+
+    # Test with multiple filters
+    filters = {
+        "title": "learning",
+        "author": "smith",
+        "reference_type": "article",
+    }
+
+    results = search_references_advanced(filters)
+
+    # Verify results are returned
+    assert len(results) == 2
+    assert results[0].title == "Machine Learning"
+    assert results[1].author == "Jane Doe"
+
+    # Verify filter was called multiple times (once per filter)
+    assert mock_query.filter.call_count == 3

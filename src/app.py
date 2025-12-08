@@ -8,6 +8,7 @@ from repositories.reference_repository import (
     delete_reference,
     edit_reference,
     search_references_by_query,
+    search_references_advanced,
 )
 from config import app, test_env
 from util import validate_reference, validate_cite_key
@@ -137,27 +138,88 @@ def edit_reference_route(ref_id):
 
 @app.route("/search_references")
 def search_references_route():
-    query = request.args.get("query")
+    # Check if advanced search mode is enabled
+    advanced_mode = request.args.get("advanced") == "true"
+
+    if advanced_mode:
+        filters = {
+            "title": request.args.get("title", "").strip(),
+            "author": request.args.get("author", "").strip(),
+            "year_from": request.args.get("year_from", "").strip(),
+            "year_to": request.args.get("year_to", "").strip(),
+            "reference_type": request.args.get("reference_type", "all"),
+            "cite_key": request.args.get("cite_key", "").strip(),
+            "journal": request.args.get("journal", "").strip(),
+            "publisher": request.args.get("publisher", "").strip(),
+        }
+
+        # Check if any filter is actually set
+        has_filters = any(
+            value
+            for key, value in filters.items()
+            if value
+            and key != "reference_type"
+            or (key == "reference_type" and value != "all")
+        )
+
+        if has_filters:
+            results = search_references_advanced(filters)
+        else:
+            flash("No search filters set")
+            results = []
+
+        return render_template(
+            "search_references.html",
+            advanced_mode=True,
+            filters=filters,
+            results=results,
+        )
+
+    # Simple search mode
+    query = request.args.get("query", "").strip()
     if query:
         results = search_references_by_query(query)
-
     else:
-        query = ""
         results = []
 
-    return render_template("search_references.html", query=query, results=results)
+    return render_template(
+        "search_references.html", query=query, results=results, advanced_mode=False
+    )
 
 
 @app.route("/export_bibtex", methods=["POST"])
 def export_bibtex():
     reference_ids = request.form.getlist("reference_ids")
     from_search = request.form.get("from_search") == "true"
+    advanced_search = request.form.get("advanced") == "true"
     query = request.form.get("query", "")
+    filters = {
+        "title": request.form.get("title", "").strip(),
+        "author": request.form.get("author", "").strip(),
+        "year_from": request.form.get("year_from", "").strip(),
+        "year_to": request.form.get("year_to", "").strip(),
+        "reference_type": request.form.get("reference_type", "all"),
+        "cite_key": request.form.get("cite_key", "").strip(),
+        "journal": request.form.get("journal", "").strip(),
+        "publisher": request.form.get("publisher", "").strip(),
+    }
 
     if not reference_ids:
         flash("No references selected")
         if from_search:
             return redirect(f"/search_references?query={query}")
+        if advanced_search:
+            return redirect(
+                f"/search_references?advanced=true"
+                f"&title={filters["title"]}"
+                f"&author={filters["author"]}"
+                f"&year_from={filters["year_from"]}"
+                f"&year_to={filters["year_to"]}"
+                f"&reference_type={filters["reference_type"]}"
+                f"&cite_key={filters["cite_key"]}"
+                f"&journal={filters["journal"]}"
+                f"&publisher={filters["publisher"]}"
+            )
         return redirect("/")
 
     references = [get_reference(ref_id) for ref_id in reference_ids]
