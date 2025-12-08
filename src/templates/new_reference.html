@@ -12,9 +12,16 @@
   </ul>
   {% endif %} {% endwith %}
   <div class="form-field">
-    <label for="reference_type"
-      >Reference Type<span class="required">*</span></label
-    >
+    
+    <div class="label-row">
+      <label for="reference_type">
+        Reference Type<span class="required">*</span>
+        
+      </label>
+      <info-tooltip info="Select the type of reference you want to create."></info-tooltip>
+    </div>
+    
+    
     <select name="reference_type" id="reference_type" required>
       <option value="book">Book</option>
       <option value="article">Article</option>
@@ -24,20 +31,29 @@
   </div>
 
   <div class="form-field">
-    <label for="cite_key">Cite Key<span class="required">*</span></label>
+    <div class="label-row">
+      <label for="cite_key">Cite Key<span class="required">*</span>
+      </label>
+      <info-tooltip info="Enter a unique key for citing this reference. <br> The key should not contain spaces or special characters."></info-tooltip>
+    </div>
     <input type="text" name="cite_key" value="{{ cite_key or '' }}" required />
   </div>
 
   <div class="form-field">
-    <label for="title">Title<span class="required">*</span></label>
+    <div class="label-row">
+      <label for="title">Title<span class="required">*</span>
+      </label>
+      <info-tooltip info="Enter the title of the reference."></info-tooltip>
+    </div>
     <input type="text" name="title" value="{{ title or '' }}" required />
   </div>
   <div class="form-field">
-    <label for="author"
-      >Author(s) add one per field (Lastname, Firstname)<span class="required"
-        >*</span
-      ></label
-    >
+    <div class="label-row">
+      <label for="author">Author(s)<span class="required">*</span>
+      </label>
+      <info-tooltip info="Provide the name of each author for the reference.<br> Click “+ Add Author” to include more than one.<br>
+Author names may be written as either “Lastname, Firstname” or “Firstname Lastname.”"></info-tooltip>
+    </div>
     <div id="author-fields">
       <div class="author-row">
         <input id="author" type="text" name="authors" required />
@@ -48,7 +64,11 @@
   </div>
 
   <div class="form-field">
-    <label for="year">Year<span class="required">*</span></label>
+    <div class="label-row">
+      <label for="year">Year<span class="required">*</span>
+      </label>
+      <info-tooltip info="Enter the publication year of the reference."></info-tooltip>
+    </div>
     <input
       type="number"
       name="year"

@@ -1,3 +1,22 @@
+// -------------------------------
+// Info Icon Tooltip Component
+// -------------------------------
+class InfoTooltip extends HTMLElement {
+    connectedCallback() {
+        const info = this.getAttribute("info");
+        this.innerHTML = `
+            <span class="info-container">
+                <span class="info-icon">i</span>
+                <span class="tooltip">${info}</span>
+            </span>
+        `;
+    }
+}
+customElements.define("info-tooltip", InfoTooltip);
+// ------------------------------
+
+
+
 // ------------------------------
 // Dynamic Author Fields
 // ------------------------------

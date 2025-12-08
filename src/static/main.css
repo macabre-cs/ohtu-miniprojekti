@@ -209,3 +209,69 @@ button {
 #add-author:hover {
   background: var(--create-hover);
 }
+
+
+/* ================================
+   INFO ICON WITH TOOLTIP
+================================ */
+/* Row containing a label and info icon */
+.label-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  gap: 8px;
+  min-height: 32px;
+}
+
+/* Wrapper for the info icon and tooltip */
+.info-container {
+  position: relative;
+  display: inline-block;
+}
+
+/* Small circular info icon */
+.info-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  width: 16px;
+  height: 16px;
+  font-size: 10px;
+  font-weight: bold;
+  font-family: Consolas, monospace;
+  cursor: default;
+
+  background: white;
+  color: black;
+  border: 2px solid black;
+  border-radius: 50%;
+}
+
+/* Tooltip (appears on hover, positioned left of icon) */
+.tooltip {
+  position: absolute;
+  top: 50%;
+  right: 22px;
+  transform: translateY(-10px);
+
+  padding: 6px 10px;
+  font-size: 13px;
+  white-space: nowrap;
+
+  background: #333;
+  color: #fff;
+  border-radius: 5px;
+
+  visibility: hidden;
+  opacity: 0;
+  transition: opacity 0.2s ease;
+}
+
+/* Show tooltip on hover */
+.info-container:hover .tooltip {
+  visibility: visible;
+  opacity: 0.8;
+}
+

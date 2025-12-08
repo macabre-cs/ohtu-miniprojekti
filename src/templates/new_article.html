@@ -1,15 +1,25 @@
 <div>
   <div class="form-field">
-    <label for="journal">Journal</label>
+    <div class="label-row">
+      <label for="journal">Journal</label>
+      <info-tooltip info="Enter the name of the journal where the article was published."></info-tooltip>
+    </div>
     <input type="text" name="journal" value="{{ reference.journal or '' }}" />
   </div>
 
   <div class="form-field">
-    <label for="volume">Volume</label>
+    <div class="label-row">
+      <label for="volume">Volume</label>
+      <info-tooltip info="Enter the volume number of the journal where the article was published."></info-tooltip>
+    </div>
     <input type="text" name="volume" value="{{ reference.volume or '' }}" />
   </div>
   <div class="form-field">
-    <label for="pages">Pages</label>
+    <div class="label-row">
+      <label for="pages">Pages</label>
+      <info-tooltip info="Enter the page range of the article.<br>
+Pages may be written as a single number (e.g., 34), a range (e.g., 123–130),<br> or multiple entries separated by commas (e.g., 34, 123–130, 135–140)."></info-tooltip>
+    </div>
     <input type="text" name="pages" value="{{ reference.pages or '' }}" />
   </div>
 </div>
