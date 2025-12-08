@@ -109,7 +109,8 @@ def parse_crossref(metadata: Any, doi: str | None = None) -> Dict[str, Any]:
 
     out["chapter"] = _clean_text(m.get("chapter"))
 
-    ref_type, booktitle = _determine_reference_type_and_booktitle(m, out["journal"])  # type: ignore[arg-type]
+    # type: ignore[arg-type]
+    ref_type, booktitle = _determine_reference_type_and_booktitle(m, out["journal"])
     out["reference_type"] = ref_type
     out["booktitle"] = booktitle
 
