@@ -1,6 +1,9 @@
 <div>
   <div class="form-field">
-    <label for="publisher">Publisher</label>
+    <div class="label-row">
+      <label for="publisher">Publisher</label>
+      <info-tooltip info="Enter the name of the publisher of the book."></info-tooltip>
+    </div>
     <input
       type="text"
       name="publisher"
@@ -9,7 +12,10 @@
   </div>
 
   <div class="form-field">
-    <label for="chapter">Chapter</label>
+    <div class="label-row">
+      <label for="chapter">Chapter</label>
+      <info-tooltip info="Enter the chapter of the book."></info-tooltip>
+    </div>
     <input type="text" name="chapter" value="{{ reference.chapter or '' }}" />
   </div>
 </div>
