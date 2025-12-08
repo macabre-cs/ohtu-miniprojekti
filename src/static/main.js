@@ -43,7 +43,7 @@ document.addEventListener("DOMContentLoaded", () => {
       });
   }
 
-  if (refTypeSelect) {
+  if (refTypeSelect && typeof REFERENCE_ID !== 'undefined') {
     refTypeSelect.addEventListener("change", () => {
       loadTemplate(refTypeSelect.value, REFERENCE_ID);
     });
@@ -57,4 +57,57 @@ document.addEventListener("DOMContentLoaded", () => {
       loadTemplate(refTypeSelect.value, REFERENCE_ID);
     }
   }
+
+  // ------------------------------
+  // Select All Checkbox
+  // ------------------------------
+
+  const selectAllCheckbox = document.getElementById("select-all");
+
+  function getReferenceCheckboxes() {
+    return Array.from(document.querySelectorAll('input[name="reference_ids"]'));
+  }
+
+  if (selectAllCheckbox) {
+    selectAllCheckbox.addEventListener("change", () => {
+      const checked = selectAllCheckbox.checked;
+      getReferenceCheckboxes().forEach((cb) => (cb.checked = checked));
+    });
+
+    document.addEventListener("change", (e) => {
+      if (e.target && e.target.name === "reference_ids") {
+        const boxes = getReferenceCheckboxes();
+        if (boxes.length === 0) {
+          selectAllCheckbox.checked = false;
+          selectAllCheckbox.indeterminate = false;
+          return;
+        }
+        const allChecked = boxes.every((b) => b.checked);
+        selectAllCheckbox.checked = allChecked;
+        selectAllCheckbox.indeterminate = false;
+      }
+    });
+  }
+
+  // ------------------------------
+  // Smooth Scroll to Results
+  // ------------------------------
+
+  if (window.location.hash === '#results') {
+    setTimeout(() => {
+      document.getElementById('results')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }, 100);
+  }
+
+  // ------------------------------
+  // Bouncing Cat
+  // ------------------------------
+
+  document.getElementById('bounce-cat').onclick = function() {
+    const catContainer = document.getElementById('cat-container');
+    catContainer.style.display = 'block';
+    setTimeout(() => {
+      catContainer.style.display = 'none';
+    }, 3000); // Hide after 3 seconds
+  };
 });

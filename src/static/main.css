@@ -96,6 +96,56 @@ body {
 }
 
 /* ================================
+   SEARCH BAR STYLES
+================================ */
+.search-container {
+  background: #ffffff;
+  border: 1px solid var(--border-form);
+  border-radius: 8px;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.04);
+  padding: 1.5rem;
+  margin-bottom: 1.5rem;
+}
+
+.search-field {
+  margin-bottom: 1rem;
+}
+
+.search-field label {
+  display: block;
+  margin-bottom: 0.5rem;
+  font-weight: 600;
+  font-size: 1rem;
+  color: #333333;
+}
+
+.search-field input {
+  width: 100%;
+  padding: 0.75rem;
+  border: 1px solid var(--border-light);
+  border-radius: 4px;
+  box-sizing: border-box;
+  font-size: 1rem;
+}
+
+.search-field select {
+  width: 100%;
+  padding: 0.75rem;
+  border: 1px solid var(--border-light);
+  border-radius: 4px;
+  box-sizing: border-box;
+  font-size: 1rem;
+  background-color: #ffffff;
+}
+
+.search-field input:focus,
+.search-field select:focus {
+  border-color: var(--focus-color);
+  outline: none;
+  box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
+}
+
+/* ================================
    REQUIRED FIELD INDICATOR
 ================================ */
 .required {
@@ -208,4 +258,23 @@ button {
 }
 #add-author:hover {
   background: var(--create-hover);
+}
+
+/* Bouncing Cat */
+
+#bouncing-cat {
+  position: relative;
+  animation: bounce 1s infinite;
+}
+
+@keyframes bounce {
+  0%, 20%, 50%, 80%, 100% {
+    transform: translateY(0);
+  }
+  40% {
+    transform: translateY(-30px);
+  }
+  60% {
+    transform: translateY(-15px);
+  }
 }

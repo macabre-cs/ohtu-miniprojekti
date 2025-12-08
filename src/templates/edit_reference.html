@@ -18,6 +18,7 @@
     <option value="book" {% if reference.reference_type == 'book' %}selected{% endif %}>Book</option>
     <option value="article" {% if reference.reference_type == 'article' %}selected{% endif %}>Article</option>
     <option value="inproceedings" {% if reference.reference_type == 'inproceedings' %}selected{% endif %}>Inproceedings</option>
+    <option value="misc" {% if reference.reference_type == 'misc' %}selected{% endif %}>Misc</option>
   </select>
   </div>
 
@@ -78,5 +79,4 @@
   const REFERENCE_ID = "{{ reference.id }}";
 </script>
 
-<script src="{{ url_for('static', filename='main.js') }}"></script>
 {% endblock %}
