@@ -206,8 +206,6 @@ def export_bibtex():
 
     if not reference_ids:
         flash("No references selected")
-        if from_search:
-            return redirect(f"/search_references?query={query}")
         if advanced_search:
             return redirect(
                 f"/search_references?advanced=true"
@@ -220,6 +218,8 @@ def export_bibtex():
                 f"&journal={filters['journal']}"
                 f"&publisher={filters['publisher']}"
             )
+        if from_search:
+            return redirect(f"/search_references?query={query}")
         return redirect("/")
 
     references = [get_reference(ref_id) for ref_id in reference_ids]
