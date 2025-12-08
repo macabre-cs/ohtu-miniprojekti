@@ -1,4 +1,7 @@
-from config import db
+import os
+import json
+import requests
+from config import db, test_env
 from entities.reference import Reference
 
 
@@ -60,6 +63,77 @@ def get_reference_by_cite_key(cite_key):
     """Get a reference by its citation key."""
     return Reference.query.filter_by(cite_key=cite_key).first()
 
+
+def get_reference_by_doi(doi):
+    # In test mode prefer local fixtures to avoid external HTTP calls.
+    if test_env and doi:
+        fixture = _load_fixture_for_doi(doi)
+        if fixture:
+            return fixture
+
+    # Normalize DOI input and call Crossref API.
+    d = _normalize_doi(doi)
+    if not d:
+        return None
+
+    url = f"https://api.crossref.org/works/{requests.utils.requote_uri(d)}"
+    try:
+        response = requests.get(url, timeout=10)
+        response.raise_for_status()
+    except requests.RequestException:
+        # Keep behavior simple for callers: return None on any error.
+        return None
+
+    try:
+        return response.json()
+    except ValueError:
+        return None
+
+
+def _load_fixture_for_doi(doi: str):
+    """Return a fixture dict for a test DOI or None.
+
+    Fixtures are searched in `tests/fixtures` and `src/tests/fixtures`.
+    The fixture filename is `crossref_test_<last_segment>.json`.
+    """
+    try:
+        key = doi.strip().split("/")[-1]
+        fixture_name = f"crossref_test_{key}.json"
+        candidate_paths = [
+            os.path.join(os.getcwd(), "tests", "fixtures", fixture_name),
+            os.path.join(os.getcwd(), "src", "tests", "fixtures", fixture_name),
+        ]
+        for fixture_path in candidate_paths:
+            if os.path.exists(fixture_path):
+                with open(fixture_path, "r", encoding="utf-8") as fh:
+                    return json.load(fh)
+        return None
+    except Exception:
+        return None
+
+
+def _normalize_doi(doi: str | None) -> str | None:
+    """Normalize user-provided DOI strings to the raw identifier used by Crossref.
+
+    Accepts values like 'doi:10.1234/abcd', full URLs, or plain DOIs.
+    Returns None for empty inputs.
+    """
+    if not doi:
+        return None
+    d = doi.strip()
+    if not d:
+        return None
+    if d.lower().startswith("doi:"):
+        d = d[4:]
+    if d.startswith("http://") or d.startswith("https://"):
+        # extract the path portion after the domain
+        parts = d.split("/", 3)
+        if len(parts) >= 4:
+            d = parts[3]
+        else:
+            # fallback: use last segment
+            d = d.split("/")[-1]
+    return d
 
 def search_references_by_query(query):
     """Search references by any field containing the query string."""

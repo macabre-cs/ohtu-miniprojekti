@@ -1,0 +1,16 @@
+{
+  "status": "ok",
+  "message-type": "work",
+  "message-version": "1.0.0",
+  "message": {
+    "DOI": "10.9999/procdoi",
+    "title": ["Conference Paper Title"],
+    "author": [
+      {"given": "Bob", "family": "Researcher"}
+    ],
+    "issued": {"date-parts": [[2020, 9, 15]]},
+    "publisher": "Conf Publisher",
+    "container-title": ["Proceedings of the Test Conference"],
+    "type": "proceedings-article"
+  }
+}

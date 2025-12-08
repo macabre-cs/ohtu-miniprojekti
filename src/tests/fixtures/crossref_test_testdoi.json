@@ -1,0 +1,19 @@
+{
+  "status": "ok",
+  "message-type": "work",
+  "message-version": "1.0.0",
+  "message": {
+    "DOI": "10.9999/testdoi",
+    "title": ["Test Article Title"],
+    "author": [
+      {"given": "First", "family": "Author"},
+      {"given": "Second", "family": "Writer"}
+    ],
+    "published-print": {"date-parts": [[2023, 1, 1]]},
+    "publisher": "Test Publisher",
+    "container-title": ["Test Journal"],
+    "volume": "1",
+    "page": "1-9",
+    "type": "article"
+  }
+}

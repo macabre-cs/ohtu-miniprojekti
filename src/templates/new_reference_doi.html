@@ -1,0 +1,30 @@
+{% extends "layout.html" %} {% block title %} Add reference by DOI {% endblock %} {% block body %}
+
+<h2 class="head-form">Add reference by DOI</h2>
+
+<form class="form" action="/new_reference_doi" method="post">
+  {% with messages = get_flashed_messages() %}
+  {% if messages %}
+  <ul>
+    {% for message in messages %}
+    <li>{{ message }}</li>
+    {% endfor %}
+  </ul>
+  {% endif %}
+  {% endwith %}
+
+  <p>DOI:n lisäämällä käyttäjä uudelleenohjataan new_reference-sivulle, jossa DOI:ta voidaan käyttää formin prefillaamiseen.</p>
+
+  <div class="form-field">
+    <label for="doi">DOI<span class="required">*</span></label>
+    <input type="text" name="doi" id="doi" placeholder="10.xxxx/xxxxx" required />
+  </div>
+
+  <button class="btn-cancel" type="button" onclick="window.location.href='/'">
+    Cancel
+  </button>
+  <button class="btn-create" type="submit">Fetch</button>
+
+</form>
+
+{% endblock %}

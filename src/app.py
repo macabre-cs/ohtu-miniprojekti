@@ -7,18 +7,94 @@ from repositories.reference_repository import (
     create_reference,
     delete_reference,
     edit_reference,
+    get_reference_by_doi,
     search_references_by_query,
-    search_references_advanced,
+    search_references_advanced
 )
 from config import app, test_env
 from util import validate_reference, validate_cite_key
 from entities.reference import Reference
 from bibtex_generator import generate_bibtex
+from doi_utils import parse_crossref
+
 
 
 def format_authors(authors):
     cleaned = [a.strip() for a in authors if a.strip()]
     return "; ".join(cleaned)
+
+
+
+def _generate_dynamic_fields(form_data):
+    """Return server-rendered type-specific partial (best-effort)."""
+    ref_type = form_data.get("reference_type") or "book"
+    templates = {
+        "book": "new_book.html",
+        "article": "new_article.html",
+        "inproceedings": "new_inproceedings.html",
+    }
+    template = templates.get(ref_type)
+    if not template:
+        return ""
+    try:
+        reference_obj = Reference(form_data)
+        return render_template(template, reference=reference_obj)
+    except Exception:
+        # best-effort: if rendering fails, don't break the page
+        return ""
+
+
+def _render_new_reference(form_data=None, doi=None):
+    """Centralised rendering for the new-reference page.
+
+    Ensures the template always receives the expected keys so templates
+    and partials can rely on them.
+    """
+    form_data = form_data or {}
+    defaults = {
+        "title": "",
+        "authors_formatted": "",
+        "year": "",
+        "reference_type": "book",
+        "author": "",
+    }
+    # Merge defaults without overwriting provided values
+    merged = {**defaults, **form_data}
+    dynamic_fields = _generate_dynamic_fields(merged)
+    return render_template(
+        "new_reference.html",
+        curr_year=datetime.now().year,
+        doi=doi,
+        dynamic_fields=dynamic_fields,
+        **merged,
+    )
+
+
+def _fetch_and_parse_doi(doi):
+    """Fetch reference metadata for DOI in test or prod mode and parse it.
+
+    Returns (form_data_dict or None, error_message_or_None).
+    """
+    if not doi:
+        return None, None
+
+    metadata = get_reference_by_doi(doi)
+    if not metadata:
+        return None, f"DOI '{doi}' could not be resolved"
+
+    try:
+        form_data = parse_crossref(metadata, doi)
+    except Exception:
+        return None, "Failed to parse DOI metadata"
+
+    # ensure author text is available for templates expecting `author`
+    if form_data.get("authors_formatted") and not form_data.get("author"):
+        form_data["author"] = form_data.get("authors_formatted")
+
+    return form_data, None
+
+
+
 
 
 @app.route("/")
@@ -29,7 +105,33 @@ def index():
 
 @app.route("/new_reference")
 def new():
-    return render_template("new_reference.html", curr_year=datetime.now().year)
+    doi = request.args.get("doi")
+
+    if doi:
+        form_data, error = _fetch_and_parse_doi(doi)
+        if error:
+            flash(error)
+            # fall back to empty form but still show the DOI in the UI
+            return _render_new_reference({}, doi=doi)
+        return _render_new_reference(form_data, doi=doi)
+
+    # No DOI: render empty form
+    return _render_new_reference({}, doi=None)
+
+
+
+@app.route("/new_reference_doi", methods=["GET", "POST"])
+def new_reference_doi():
+    if request.method == "POST":
+        doi = request.form.get("doi", "").strip()
+        if not doi:
+            flash("Please enter a DOI")
+            return render_template("new_reference_doi.html")
+        # Ohjataan new_reference-sivulle, jossa DOI:ta voidaan käyttää lomakkeen täyttämiseen
+        return redirect(f"/new_reference?doi={doi}")
+
+    return render_template("new_reference_doi.html")
+
 
 
 @app.route("/load_fields/<ref_type>/<ref_id>", methods=["GET"])
