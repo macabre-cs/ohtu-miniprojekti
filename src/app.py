@@ -6,16 +6,20 @@ from repositories.reference_repository import (
     get_reference,
     create_reference,
     delete_reference,
-    edit_reference
+    edit_reference,
+    search_references_by_query,
+    search_references_advanced,
 )
 from config import app, test_env
 from util import validate_reference, validate_cite_key
 from entities.reference import Reference
 from bibtex_generator import generate_bibtex
 
+
 def format_authors(authors):
     cleaned = [a.strip() for a in authors if a.strip()]
     return "; ".join(cleaned)
+
 
 @app.route("/")
 def index():
@@ -27,6 +31,7 @@ def index():
 def new():
     return render_template("new_reference.html", curr_year=datetime.now().year)
 
+
 @app.route("/load_fields/<ref_type>/<ref_id>", methods=["GET"])
 def load_fields(ref_type, ref_id):
     reference = get_reference(ref_id) if ref_id != "none" else None
@@ -34,7 +39,7 @@ def load_fields(ref_type, ref_id):
         "book": "new_book.html",
         "article": "new_article.html",
         "inproceedings": "new_inproceedings.html",
-        "misc": "new_misc.html"
+        "misc": "new_misc.html",
     }
     if ref_type not in templates:
         return "Invalid reference type", 400
@@ -131,12 +136,91 @@ def edit_reference_route(ref_id):
         return render_edit(form_data)
 
 
+@app.route("/search_references")
+def search_references_route():
+    # Check if advanced search mode is enabled
+    advanced_mode = request.args.get("advanced") == "true"
+
+    if advanced_mode:
+        filters = {
+            "title": request.args.get("title", "").strip(),
+            "author": request.args.get("author", "").strip(),
+            "year_from": request.args.get("year_from", "").strip(),
+            "year_to": request.args.get("year_to", "").strip(),
+            "reference_type": request.args.get("reference_type", "all"),
+            "cite_key": request.args.get("cite_key", "").strip(),
+            "journal": request.args.get("journal", "").strip(),
+            "publisher": request.args.get("publisher", "").strip(),
+        }
+
+        # Check if any filter is actually set
+        has_filters = any(
+            value
+            for key, value in filters.items()
+            if value
+            and key != "reference_type"
+            or (key == "reference_type" and value != "all")
+        )
+
+        results = search_references_advanced(filters) if has_filters else []
+        show_results = has_filters
+
+        return render_template(
+            "search_references.html",
+            advanced_mode=True,
+            filters=filters,
+            results=results,
+            show_results=show_results,
+        )
+
+    # Simple search mode
+    query = request.args.get("query", "").strip()
+    show_results = bool(query)
+    results = search_references_by_query(query) if show_results else []
+
+    return render_template(
+        "search_references.html",
+        query=query,
+        results=results,
+        advanced_mode=False,
+        show_results=show_results,
+    )
+
+
 @app.route("/export_bibtex", methods=["POST"])
 def export_bibtex():
     reference_ids = request.form.getlist("reference_ids")
+    from_search = request.form.get("from_search") == "true"
+    advanced_search = request.form.get("advanced") == "true"
+    query = request.form.get("query", "")
+    filters = {
+        "title": request.form.get("title", "").strip(),
+        "author": request.form.get("author", "").strip(),
+        "year_from": request.form.get("year_from", "").strip(),
+        "year_to": request.form.get("year_to", "").strip(),
+        "reference_type": request.form.get("reference_type", "all"),
+        "cite_key": request.form.get("cite_key", "").strip(),
+        "journal": request.form.get("journal", "").strip(),
+        "publisher": request.form.get("publisher", "").strip(),
+    }
 
     if not reference_ids:
         flash("No references selected")
+        if advanced_search:
+            return redirect(
+                f"/search_references?advanced=true"
+                f"&title={filters['title']}"
+                f"&author={filters['author']}"
+                f"&year_from={filters['year_from']}"
+                f"&year_to={filters['year_to']}"
+                f"&reference_type={filters['reference_type']}"
+                f"&cite_key={filters['cite_key']}"
+                f"&journal={filters['journal']}"
+                f"&publisher={filters['publisher']}"
+                f"#results"
+            )
+        if from_search:
+            return redirect(f"/search_references?query={query}#results")
         return redirect("/")
 
     references = [get_reference(ref_id) for ref_id in reference_ids]
@@ -146,7 +230,7 @@ def export_bibtex():
     return Response(
         bibtex,
         mimetype="text/plain",
-        headers={"Content-Disposition": "attachment;filename=references.bib"}
+        headers={"Content-Disposition": "attachment;filename=references.bib"},
     )
 
 
