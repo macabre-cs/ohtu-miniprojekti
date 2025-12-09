@@ -15,6 +15,7 @@ def setup_db():
     If database tables already exist, those are dropped before the creation.
     """
     print("Dropping existing tables (if any)")
+    db.reflect()
     db.drop_all()
 
     print("Creating database tables")
