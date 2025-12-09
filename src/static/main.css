@@ -342,3 +342,16 @@ button {
   visibility: visible;
   opacity: 0.8;
 }
+
+/* ================================
+   BIBTEX PREVIEW STYLES
+================================ */
+.bibtex-preview {
+  width: 100%;
+  padding: 0.5rem;
+  margin-bottom: 0.5rem;
+  
+  border: 1px solid var(--border-light);
+  border-radius: 4px;
+  box-sizing: border-box;
+}

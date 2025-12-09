@@ -122,7 +122,7 @@
     </ul>
   {% endif %} {% endwith %}
 </div>
-<form id="export-form" action="/export_bibtex" method="POST">
+<form id="export-form" action="/preview_bibtex" method="POST">
   <input type="hidden" name="from_search" value="true">
   {% if advanced_mode %}
   <input type="hidden" name="advanced" value="true">

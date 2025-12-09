@@ -9,7 +9,7 @@ from repositories.reference_repository import (
     edit_reference,
     get_reference_by_doi,
     search_references_by_query,
-    search_references_advanced
+    search_references_advanced,
 )
 from config import app, test_env
 from util import validate_reference, validate_cite_key
@@ -18,11 +18,9 @@ from bibtex_generator import generate_bibtex
 from doi_utils import parse_crossref
 
 
-
 def format_authors(authors):
     cleaned = [a.strip() for a in authors if a.strip()]
     return "; ".join(cleaned)
-
 
 
 def _generate_dynamic_fields(form_data):
@@ -94,9 +92,6 @@ def _fetch_and_parse_doi(doi):
     return form_data, None
 
 
-
-
-
 @app.route("/")
 def index():
     references = get_references()
@@ -119,7 +114,6 @@ def new():
     return _render_new_reference({}, doi=None)
 
 
-
 @app.route("/new_reference_doi", methods=["GET", "POST"])
 def new_reference_doi():
     if request.method == "POST":
@@ -131,7 +125,6 @@ def new_reference_doi():
         return redirect(f"/new_reference?doi={doi}")
 
     return render_template("new_reference_doi.html")
-
 
 
 @app.route("/load_fields/<ref_type>/<ref_id>", methods=["GET"])
@@ -289,8 +282,8 @@ def search_references_route():
     )
 
 
-@app.route("/export_bibtex", methods=["POST"])
-def export_bibtex():
+@app.route("/preview_bibtex", methods=["POST"])
+def preview_bibtex():
     reference_ids = request.form.getlist("reference_ids")
     from_search = request.form.get("from_search") == "true"
     advanced_search = request.form.get("advanced") == "true"
@@ -328,6 +321,13 @@ def export_bibtex():
     references = [get_reference(ref_id) for ref_id in reference_ids]
 
     bibtex = generate_bibtex(references)
+
+    return render_template("preview_bibtex.html", bibtex=bibtex)
+
+
+@app.route("/export_bibtex", methods=["POST"])
+def export_bibtex():
+    bibtex = request.form.get("bibtex_data", "")
 
     return Response(
         bibtex,
