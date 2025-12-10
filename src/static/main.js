@@ -122,11 +122,47 @@ document.addEventListener("DOMContentLoaded", () => {
   // Bouncing Cat
   // ------------------------------
 
-  document.getElementById('bounce-cat').onclick = function() {
-    const catContainer = document.getElementById('cat-container');
-    catContainer.style.display = 'block';
-    setTimeout(() => {
-      catContainer.style.display = 'none';
-    }, 3000); // Hide after 3 seconds
-  };
+  const bounceCat = document.getElementById('bounce-cat');
+  if (bounceCat) {
+    bounceCat.onclick = function() {
+      const catContainer = document.getElementById('cat-container');
+      catContainer.style.display = 'block';
+      setTimeout(() => {
+        catContainer.style.display = 'none';
+      }, 3000); // Hide after 3 seconds
+    };
+  }
+  // ------------------------------
+  // Dark Mode Toggle
+  // ------------------------------
+
+  const darkModeToggle = document.getElementById("dark-mode-toggle");
+  
+  if (darkModeToggle) {
+    // Check for saved user preference, otherwise use system preference
+    const savedTheme = localStorage.getItem("theme");
+    const prefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
+    
+    if (savedTheme === "dark" || (!savedTheme && prefersDark)) {
+      document.body.classList.add("dark-mode");
+      darkModeToggle.textContent = "☀️";
+    } else if (savedTheme === "light") {
+      document.body.classList.add("light-mode");
+      darkModeToggle.textContent = "🌙";
+    }
+    
+    darkModeToggle.addEventListener("click", () => {
+      if (document.body.classList.contains("dark-mode")) {
+        document.body.classList.remove("dark-mode");
+        document.body.classList.add("light-mode");
+        darkModeToggle.textContent = "🌙";
+        localStorage.setItem("theme", "light");
+      } else {
+        document.body.classList.remove("light-mode");
+        document.body.classList.add("dark-mode");
+        darkModeToggle.textContent = "☀️";
+        localStorage.setItem("theme", "dark");
+      }
+    });
+  }
 });

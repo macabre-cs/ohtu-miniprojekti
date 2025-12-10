@@ -355,3 +355,178 @@ button {
   border-radius: 4px;
   box-sizing: border-box;
 }
+
+/* ================================
+   DARK MODE TOGGLE BUTTON
+================================ */
+.dark-mode-toggle {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  
+  background: transparent;
+  border-radius: 10%;
+  width: 40px;
+  height: 40px;
+  
+  font-size: 1.5rem;
+  cursor: pointer;
+  
+  /* Center the icon */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* ================================
+   DARK MODE
+================================ */
+body.dark-mode {
+  background-color: #222222;
+  color: #e0e0e0;
+}
+
+body.dark-mode .head-form {
+  color: #e0e0e0;
+}
+
+body.dark-mode .reference-card {
+  background: #2d2d2d;
+  border-color: #444444;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.3);
+}
+
+body.dark-mode .reference-title {
+  color: #e0e0e0;
+}
+
+body.dark-mode .reference-meta p {
+  color: #b0b0b0;
+}
+
+body.dark-mode .form {
+  background: #2d2d2d;
+  border-color: #555555;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.3);
+}
+
+body.dark-mode .search-container {
+  background: #2d2d2d;
+  border-color: #555555;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.3);
+}
+
+body.dark-mode .form-field {
+  background: #2d2d2d;
+  border-color: #444444;
+}
+
+body.dark-mode .search-field label,
+body.dark-mode .form-field label {
+  color: #e0e0e0;
+}
+
+body.dark-mode .search-field input,
+body.dark-mode .search-field select,
+body.dark-mode .form-field input,
+body.dark-mode .form-field select {
+  background-color: #1e1e1e;
+  color: #e0e0e0;
+  border-color: #444444;
+}
+
+body.dark-mode .info-icon {
+  background: #2d2d2d;
+  color: #e0e0e0;
+  border-color: #e0e0e0;
+}
+
+body.dark-mode .tooltip {
+  background: #444444;
+  color: #e0e0e0;
+}
+
+body.dark-mode .bibtex-preview {
+  background-color: #1e1e1e;
+  color: #e0e0e0;
+  border-color: #444444;
+}
+
+/* Respect system preference by default */
+@media (prefers-color-scheme: dark) {
+  body:not(.light-mode) {
+    background-color: #1e1e1e;
+    color: #e0e0e0;
+  }
+
+  body:not(.light-mode) .dark-mode-toggle {
+    background: #2d2d2d;
+    border-color: #e0e0e0;
+  }
+
+  body:not(.light-mode) .head-form {
+    color: #e0e0e0;
+  }
+
+  body:not(.light-mode) .reference-card {
+    background: #2d2d2d;
+    border-color: #444444;
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.3);
+  }
+
+  body:not(.light-mode) .reference-title {
+    color: #e0e0e0;
+  }
+
+  body:not(.light-mode) .reference-meta p {
+    color: #b0b0b0;
+  }
+
+  body:not(.light-mode) .form {
+    background: #2d2d2d;
+    border-color: #555555;
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.3);
+  }
+
+  body:not(.light-mode) .search-container {
+    background: #2d2d2d;
+    border-color: #555555;
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.3);
+  }
+
+  body:not(.light-mode) .form-field {
+    background: #2d2d2d;
+    border-color: #444444;
+  }
+
+  body:not(.light-mode) .search-field label,
+  body:not(.light-mode) .form-field label {
+    color: #e0e0e0;
+  }
+
+  body:not(.light-mode) .search-field input,
+  body:not(.light-mode) .search-field select,
+  body:not(.light-mode) .form-field input,
+  body:not(.light-mode) .form-field select {
+    background-color: #1e1e1e;
+    color: #e0e0e0;
+    border-color: #444444;
+  }
+
+  body:not(.light-mode) .info-icon {
+    background: #2d2d2d;
+    color: #e0e0e0;
+    border-color: #e0e0e0;
+  }
+
+  body:not(.light-mode) .tooltip {
+    background: #444444;
+    color: #e0e0e0;
+  }
+
+  body:not(.light-mode) .bibtex-preview {
+    background-color: #1e1e1e;
+    color: #e0e0e0;
+    border-color: #444444;
+  }
+}
