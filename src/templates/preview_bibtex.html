@@ -1,0 +1,21 @@
+{% extends "layout.html" %} {% block title %} References app {% endblock %} {%
+block body %}
+<h2>
+    Preview BibTeX Export
+</h2>
+<p>
+    <button class="btn-cancel" onclick="window.location.href='/'">
+        Cancel
+    </button>
+    <button class="btn-create" type="button" onclick="document.getElementById('export-form').submit()">
+        Download BibTeX File
+    </button>
+</p>
+<form id="export-form" action="/export_bibtex" method="POST">
+    <input type="hidden" name="bibtex_data" value="{{ bibtex | safe }}">
+<div class="bibtex-preview">
+    <pre>{{ bibtex | safe }}</pre>
+</div>
+
+
+{% endblock %}
